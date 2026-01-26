@@ -1,21 +1,19 @@
 {
     "method": "PUT",
-    "url": "https://api.your-company-domain.com/v1/policies/ABC12345/transactions/updateSystematicWithdrawal",
+    "url": "https://api.your-company-domain.com/v1/policies/ABC12345/withdrawals/update-systematic-withdrawal/1243123",
     "headers": {
         "Content-Type": "application/json",
         "Accept": "application/json",
         "Authorization": "Bearer <token>",
         "correlationId": "9f8e7d6c-1111-2222-3333-444455556666"
     },
-    "query": {
-        "cusip": "12345AB9"
-    },
     "body": {
         "effectiveDate": "2025-01-20",
         "actionIndicator": "O",
         "associatedFirmId": "FIRM123",
         "nsccParticipantId": "NSCC001",
-        "cusip": "12345A",
+        "cusip": "0275IFOW4",
+		"allocationOption": "PRORATA",
         "SystematicProgram": {
             "paymentForm": "ACH",
             "arrangementType": "WITHDRAWAL",
@@ -28,11 +26,11 @@
             "previousTransactionDate": "2025-01-15",
             "nextTransactionDate": "2025-02-01",
             "payee": {
-                "partyId": "Party_PI_1",
+                "taxId": "123456789",
                 "firstName": "Alex",
                 "middleName": "M",
                 "lastName": "Smith",
-                "organizationName": "OrgName",
+                "type": "individual",
                 "bank": {
                     "bankId": "Bank_1",
                     "nameOnAccount": "Alex Smith",
@@ -44,7 +42,7 @@
                 },
                 "taxWithholdingInstructions": [
                     {
-                        "partyId": "Party_PI_1",
+                        "taxId": "123456789",
                         "taxWithholdingType": "FEDERAL",
                         "taxRateToUse": "USEVALUESENTERED",
                         "filingStatus": "SINGLE",
@@ -54,7 +52,7 @@
                         "taxJurisdiction": "USA"
                     },
                     {
-                        "partyId": "Party_PI_1",
+                        "taxId": "123456789",
                         "taxWithholdingType": "STATE",
                         "taxRateToUse": "USEVALUESENTERED",
                         "filingStatus": "DEFAULT",
@@ -67,13 +65,16 @@
             },
             "parties": [
                 {
-                    "partyId": "Party_PI_1",
-                    "firstName": "Max",
-                    "middleName": "II",
-                    "lastName": "Payne",
-                    "partyRole": "OWNER",
-                    "paymentForm": "ACH",
-                    "allocationPercentage": 100,
+                    "taxId": "123456789",
+					"firstName": "Alex",
+					"middleName": "M",
+					"lastName": "Smith",
+					"type": "individual",
+					"relationships": [
+						"owner"
+					  ],
+					"paymentForm": "ACH",
+					"allocationPercentage": 100,
                     "bank": {
                         "bankId": "Bank_1",
                         "nameOnAccount": "Alex Smith",
@@ -93,8 +94,7 @@
                         "state": "MA",
                         "zipCode": "02110",
                         "zipCodeExtension": "1234"
-                    },
-                    "forBenefitOfOrForFurtherCredit": "TBD"
+                    }
                 }
             ],
             "producer": {
@@ -102,15 +102,12 @@
                 "npn": "1234567890",
                 "crdNumber": "9876543210"
             },
-            "fundAllocation": {
-                "allocationOption": "PRORATA"
-            },
             "fundDistributions": [
                 {
                     "fundId": "FUND-ABC",
                     "fundName": "Growth Fund",
-                    "totalFundValue": 234263,
-                    "requestedAmount": 2343,
+                    "totalFundValue": null,
+                    "requestedAmount": null,
                     "fundDistributionSegment": {
                         "segmentId": "SEG-1",
                         "currentAmount": null,
@@ -120,8 +117,8 @@
                 {
                     "fundId": "FUND-XYZ",
                     "fundName": "Income Fund",
-                    "totalFundValue": 84500,
-                    "requestedAmount": 800,
+                    "totalFundValue": null,
+                    "requestedAmount": null,
                     "fundDistributionSegment": {
                         "segmentId": "SEG-2",
                         "currentAmount": null,

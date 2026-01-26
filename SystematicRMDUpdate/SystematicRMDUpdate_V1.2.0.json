@@ -1,21 +1,21 @@
 {
     "method": "PUT",
-    "url": "https://api.your-company-domain.com/v1/policies/ABC12345/transactions/updatesystematicRMD",
-    "headers": {
+    "url": "https://api.your-company-domain.com/v1/policies/ABC12345/withdrawals/update-systematic-rmd/1243123",
+        "headers": 
+        {
         "Content-Type": "application/json",
         "Accept": "application/json",
         "Authorization": "Bearer <token>",
         "correlationId": "7b4e9c0a-1234-4567-89ab-001122334455"
     },
-    "query": {
-        "cusip": "12345AB9"
-    },
+    
     "body": {
         "effectiveDate": "2025-01-20",
         "actionIndicator": "O",
         "associatedFirmId": "FIRM123",
         "nsccParticipantId": "NSCC001",
-        "cusip": "12345A",
+        "cusip": "0275IFOW4",
+		"allocationOption": "PRORATA",
         "SystematicProgram": {
             "paymentForm": "ACH",
             "arrangementType": "REQUIREDMINIMUMDISTRIBUTION",
@@ -28,11 +28,11 @@
             "previousTransactionDate": "2025-01-15",
             "nextTransactionDate": "2025-02-01",
             "payee": {
-                "partyId": "Party_PI_1",
+                "taxId": "123456789",
                 "firstName": "Alex",
                 "middleName": "M",
                 "lastName": "Smith",
-                "organizationName": "OrgName",
+                "type": "individual",
                 "bank": {
                     "bankId": "Bank_1",
                     "nameOnAccount": "Alex Smith",
@@ -44,7 +44,7 @@
                 },
                 "taxWithholdingInstructions": [
                     {
-                        "partyId": "Party_PI_1",
+                        "taxId": "123456789",
                         "taxWithholdingType": "FEDERAL",
                         "taxRateToUse": "USEVALUESENTERED",
                         "filingStatus": "SINGLE",
@@ -57,13 +57,16 @@
             },
             "parties": [
                 {
-                    "partyId": "Party_PI_1",
-                    "firstName": "Max",
-                    "middleName": "II",
-                    "lastName": "Payne",
-                    "partyRole": "OWNER",
-                    "paymentForm": "ACH",
-                    "allocationPercentage": 100,
+                    "taxId": "123456789",
+					"firstName": "Alex",
+					"middleName": "M",
+					"lastName": "Smith",
+					"type": "individual",
+					"relationships": [
+						"owner"
+					  ],
+					"paymentForm": "ACH",
+					"allocationPercentage": 100,
                     "bank": {
                         "bankId": "Bank_1",
                         "nameOnAccount": "Alex Smith",
@@ -92,23 +95,19 @@
                 "npn": "1234567890",
                 "crdNumber": "9876543210"
             },
-            "fundAllocation": {
-                "allocationOption": "PRORATA"
-            },
             "fundDistributions": [
                 {
                     "fundId": "FUND-ABC",
                     "fundName": "Growth Fund",
-                    "totalFundValue": 12342342,
-                    "requestedAmount": 23542,
+                    "totalFundValue": null,
+                    "requestedAmount": null,
                     "fundDistributionSegment": {
                         "segmentId": "SEG-1",
                         "currentAmount": null,
                         "requestedAmount": null
                     }
                 }
-            ]
-        },
+            ],
         "RMDInfo": {
             "RMDTaxYear": 2025,
             "RMDAgeAtDistribution": 73,
@@ -116,6 +115,7 @@
             "RMDRequestedAmount": 1200,
             "RMDCalculationMethod": "UNIFORM_LIFETIME_TABLE",
             "RMDPriorYearEndValue": 118560
-        }
+			}
+		}
     }
 }
