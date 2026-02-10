@@ -105,6 +105,56 @@ The schema for systematic program update transactions is defined in the data mod
 - allocationOption: PRORATA, DOLLAR, SPECIFYPERCENTAGE, SPECIFIEDFUNDS, etc.
 - fundDistributions: Array of fund distribution objects
 
+
+# Error Schema Overview
+
+All API operations—across synchronous and asynchronous processing models—adhere to a unified **Error schema**. This ensures consistent error handling, predictable integration behavior, and standardized troubleshooting across all transaction types.
+
+## Success Response Expectations
+
+### Synchronous APIs
+- Return **HTTP 200** for successful, completed processing.
+
+### Asynchronous APIs
+- Return **HTTP 202** to acknowledge the request has been accepted for processing but not yet completed.
+
+---
+
+## Standard Error Schema
+Every error response—regardless of transaction type—includes:
+- An HTTP status code in the **400–599** range
+- A structured and validated **error code**
+- A **timestamp** of when the error was generated
+- A developer‑focused **technical message** (`message`)
+- A safe, user‑friendly **userMessage**
+- A **correlationId** for cross‑system tracing
+- Optional **field‑level** or **rule‑level** error collections
+
+---
+
+## Key Fields
+
+| Field | Description |
+|-------|-------------|
+| **httpStatus** | Numeric HTTP status code (400–599) representing the type and severity of the failure. |
+| **code** | Structured identifier in the enforced format: `domain.category.subcategory`. Enables machine‑readable error handling. |
+| **message** | Technical diagnostic detail for developers, logs, or support teams. |
+| **userMessage** | End‑user‑friendly explanation, safe to show in portals or consumer‑facing apps. |
+| **correlationId** | Carries forward the inbound request’s correlation ID header to enable end‑to‑end traceability. |
+| **validationErrors** (optional) | Array describing field‑level validation issues (e.g., missing required fields, incorrect formats). |
+| **businessErrors** (optional) | Array describing domain/business rule violations; each entry requires its own code and message. |
+
+---
+
+## Purpose & Benefits
+This standardized error structure ensures:
+- A **predictable experience** across all APIs (synchronous + asynchronous)
+- Clear differentiation between **developer diagnostics** and **user‑safe messages**
+- Enhanced **traceability** for carriers, distributors, and integrators
+- Support for granular **validation feedback** and complex business rule logic
+- Easier **monitoring, logging, and cross‑system troubleshooting**
+
+
 ## OpenAPI Specs
 Unified Swagger documentation for all endpoints is available in the `openapi-specs/` folder.
 
