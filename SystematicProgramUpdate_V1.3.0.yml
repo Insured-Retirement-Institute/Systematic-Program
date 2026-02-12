@@ -1,10 +1,10 @@
 openapi: 3.1.0
 info:
   title: Policy Transactions API - Update Systematic Withdrawal & Update Systematic RMD
-  version: 1.2.0
+  version: 1.3.0
   description: API to update a systematic withdrawal and Systematic RMD on a policy.
   license:
-    name: MIT
+    name: MIT 
     url: https://opensource.org/licenses/MIT
 paths:
   "/v1/policies/{policyNumber}/withdrawals/update-systematic-withdrawal/{arrangementId}":
@@ -45,7 +45,7 @@ paths:
                     previousTransactionDate: '2025-01-15'
                     nextTransactionDate: '2025-02-01'
                     payee:
-                      taxId: '123456789'
+                    - taxId: '123456789'
                       firstName: 'Alex'
                       middleName: 'M'
                       lastName: 'Smith'
@@ -64,15 +64,12 @@ paths:
                           taxRateToUse: 'USEVALUESENTERED'
                           filingStatus: 'SINGLE'
                           dollar: 10
-                          percentage: 20
                           exemptions: 0
-                          taxJurisdiction: 'USA'
                         - taxId: '123456789'
                           taxWithholdingType: 'STATE'
                           taxRateToUse: 'USEVALUESENTERED'
                           filingStatus: 'DEFAULT'
                           dollar: 10
-                          percentage: 5
                           exemptions: 0
                           taxJurisdiction: 'MA'
                     parties:
@@ -99,6 +96,8 @@ paths:
                           addressLine1: '100 Main St'
                           addressLine2: 'Downtown'
                           addressLine3: 'Suite 35'
+                          addressLine4: 'String'
+                          addressLine5: 'String'
                           city: 'Boston'
                           state: 'MA'
                           zipCode: '02110'
@@ -112,94 +111,40 @@ paths:
                         fundName: 'Growth Fund'
                         totalFundValue: null
                         requestedAmount: null
-                        fundDistributionSegment:
-                          segmentId: 'SEG-1'
-                          currentAmount: null
-                          requestedAmount: null
                       - fundId: 'FUND-XYZ'
                         fundName: 'Income Fund'
                         totalFundValue: null
                         requestedAmount: null
-                        fundDistributionSegment:
-                          segmentId: 'SEG-2'
-                          currentAmount: null
-                          requestedAmount: null
       responses:
-        "200":
-          description: Successful update
+        '200':
+          description: Success
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/SystematicProgramUpdateResponse"
-        "400":
-          description: Validation error
+                $ref: '#/components/schemas/SystematicProgramUpdateResponse'
+        '202':
+          description: |
+            Accepted.
+            The request passed basic validation and has been accepted for asynchronous processing.
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/Error"
-        "401":
-          description: Unauthorized
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/Error"
-        "403":
-          description: Forbidden
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/Error"
-        "404":
-          description: Not found
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/Error"
-        "409":
-          description: Conflict
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/Error"
-        "422":
-          description: Unprocessable Entity
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/Error"
-        "429":
-          description: Too Many Requests
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/Error"
-        "500":
-          description: Server error
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/Error"
-        "502":
-          description: Bad Gateway
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/Error"
-        "503":
-          description: Service Unavailable
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/Error"
-        "504":
-          description: Gateway Timeout
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/Error"
-      security:
-        - oauth2:
-            - withdrawal.write
+                $ref: '#/components/schemas/SystematicProgramUpdateResponse'      
+        '400': { $ref: '#/components/responses/BadRequestError' }
+        '401': { $ref: '#/components/responses/UnauthorizedError' }
+        '403': { $ref: '#/components/responses/ForbiddenError' }
+        '404': { $ref: '#/components/responses/NotFoundError' }
+        '405': { $ref: '#/components/responses/MethodNotAllowedError' }
+        '406': { $ref: '#/components/responses/NotAcceptableError' }
+        '409': { $ref: '#/components/responses/ConflictError' }
+        '413': { $ref: '#/components/responses/PayloadTooLargeError' }
+        '415': { $ref: '#/components/responses/UnsupportedMediaTypeError' }
+        '422': { $ref: '#/components/responses/UnprocessableEntityError' }
+        '429': { $ref: '#/components/responses/TooManyRequestsError' }
+        '500': { $ref: '#/components/responses/InternalServerError' }
+        '502': { $ref: '#/components/responses/BadGatewayError' }
+        '503': { $ref: '#/components/responses/ServiceUnavailableError' }
+        '504': { $ref: '#/components/responses/GatewayTimeoutError' }
 
   "/v1/policies/{policyNumber}/withdrawals/update-systematic-rmd/{arrangementId}":
     put:
@@ -239,7 +184,7 @@ paths:
                     previousTransactionDate: '2025-01-15'
                     nextTransactionDate: '2025-02-01'
                     payee:
-                      taxId: '123456789'
+                    - taxId: '123456789'
                       firstName: 'Alex'
                       middleName: 'M'
                       lastName: 'Smith'
@@ -258,9 +203,7 @@ paths:
                           taxRateToUse: 'USEVALUESENTERED'
                           filingStatus: 'SINGLE'
                           dollar: 10
-                          percentage: 20
                           exemptions: 0
-                          taxJurisdiction: 'USA'
                     parties:
                       - taxId: '123456789'
                         firstName: 'Alex'
@@ -285,6 +228,8 @@ paths:
                           addressLine1: '100 Main St'
                           addressLine2: 'Downtown'
                           addressLine3: 'Suite 35'
+                          addressLine4: 'String'
+                          addressLine5: 'String'
                           city: 'Boston'
                           state: 'MA'
                           zipCode: '02110'
@@ -298,10 +243,6 @@ paths:
                         fundName: 'Growth Fund'
                         totalFundValue: null
                         requestedAmount: null
-                        fundDistributionSegment:
-                          segmentId: 'SEG-1'
-                          currentAmount: null
-                          requestedAmount: null
                     rmdInfo:
                       rmdTaxYear: 2025
                       rmdAgeAtDistribution: 73
@@ -310,93 +251,37 @@ paths:
                       rmdCalculationMethod: 'UNIFORM_LIFETIME_TABLE'
                       rmdPriorYearEndValue: 118560.00
       responses:
-        "200":
-          description: Successful update
+        '200':
+          description: Success
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/SystematicProgramUpdateResponse"
-        "400":
-          description: Validation error
+                $ref: '#/components/schemas/SystematicProgramUpdateResponse'
+        '202':
+          description: |
+            Accepted.
+            The request passed basic validation and has been accepted for asynchronous processing.
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/Error"
-        "401":
-          description: Unauthorized
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/Error"
-        "403":
-          description: Forbidden
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/Error"
-        "404":
-          description: Not found
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/Error"
-        "409":
-          description: Conflict
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/Error"
-        "422":
-          description: Unprocessable Entity
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/Error"
-        "429":
-          description: Too Many Requests
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/Error"
-        "500":
-          description: Server error
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/Error"
-        "502":
-          description: Bad Gateway
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/Error"
-        "503":
-          description: Service Unavailable
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/Error"
-        "504":
-          description: Gateway Timeout
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/Error"
-      security:
-        - oauth2:
-            - withdrawal.write
+                $ref: '#/components/schemas/SystematicProgramUpdateResponse'
+        '400': { $ref: '#/components/responses/BadRequestError' }
+        '401': { $ref: '#/components/responses/UnauthorizedError' }
+        '403': { $ref: '#/components/responses/ForbiddenError' }
+        '404': { $ref: '#/components/responses/NotFoundError' }
+        '405': { $ref: '#/components/responses/MethodNotAllowedError' }
+        '406': { $ref: '#/components/responses/NotAcceptableError' }
+        '409': { $ref: '#/components/responses/ConflictError' }
+        '413': { $ref: '#/components/responses/PayloadTooLargeError' }
+        '415': { $ref: '#/components/responses/UnsupportedMediaTypeError' }
+        '422': { $ref: '#/components/responses/UnprocessableEntityError' }
+        '429': { $ref: '#/components/responses/TooManyRequestsError' }
+        '500': { $ref: '#/components/responses/InternalServerError' }
+        '502': { $ref: '#/components/responses/BadGatewayError' }
+        '503': { $ref: '#/components/responses/ServiceUnavailableError' }
+        '504': { $ref: '#/components/responses/GatewayTimeoutError' }
 
 components:
-  securitySchemes:
-    oauth2:
-      type: oauth2
-      flows:
-        clientCredentials:
-          tokenUrl: https://auth.your-company-domain.com/oauth2/token
-          scopes:
-            withdrawal.write: Update systematic programs
-            withdrawal.read: Read systematic programs
-  
   parameters:
     policyNumber:
       name: policyNumber
@@ -424,7 +309,99 @@ components:
       schema:
           type: string
           maxLength: 100
-  
+  responses:
+    BadRequestError:
+      description: Bad Request
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+    UnauthorizedError:
+      description: Unauthorized
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+    ForbiddenError:
+      description: Forbidden
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+    NotFoundError:
+      description: Not Found
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+    MethodNotAllowedError:
+      description: Method Not Allowed
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+    NotAcceptableError:
+      description: Not Acceptable
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+    ConflictError:
+      description: |
+        A transaction for this policy is already in progress or an equivalent request has already been accepted.
+        Re-submitting the same transaction while it is in-flight will be rejected to prevent duplicate processing.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+    PayloadTooLargeError:
+      description: Payload Too Large
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+    UnsupportedMediaTypeError:
+      description: Unsupported Media Type
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+    UnprocessableEntityError:
+      description: Unprocessable Entity
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+    TooManyRequestsError:
+      description: Too Many Requests
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+    InternalServerError:
+      description: Internal Server Error
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+    BadGatewayError:
+      description: Bad Gateway
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+    ServiceUnavailableError:
+      description: Service Unavailable
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+    GatewayTimeoutError:
+      description: Gateway Timeout
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
   schemas:
     Producer:
       type: object
@@ -534,6 +511,7 @@ components:
           maxLength: 100
         cusip:
           type: string
+          minLength: 9
           maxLength: 9
           pattern: '^[0-9]{3}[A-Z0-9]{5}[0-9]$'
           description: unique identification code. Optional; REQUIRED only when policyNumber is not globally unique.
@@ -597,6 +575,7 @@ components:
           maxLength: 100
         cusip:
           type: string
+          minLength: 9
           maxLength: 9
           pattern: '^[0-9]{3}[A-Z0-9]{5}[0-9]$'
           description: unique identification code. Optional; REQUIRED only when policyNumber is not globally unique.
@@ -654,14 +633,13 @@ components:
           description: Mode of payment
           enum:
             - DTCC
-            - CREDITCARD
             - ACH
             - CHECK
             - WIRE
             - EXCHANGE
         arrangementType:
           type: string
-          description: The type of payment such as fixed or flexible
+          description: "Indicates the type of financial arrangement being set up or updated for the systematic program, such as a recurring payment, withdrawal, loan repayment, required minimum distribution, or payout.[ for RMD, it will always be REQUIREDMINIMUMDISTRIBUTION]"
           enum:
             - PAYMENT
             - WITHDRAWAL
@@ -706,7 +684,7 @@ components:
           maximum: 100
         frequency:
           type: string
-          description: frequency
+          description: Indicates how often the systematic program executes
           enum:
             - DAILY
             - EVERYTWOWEEKS
@@ -714,7 +692,6 @@ components:
             - SEMIANNUAL
             - QUARTERLY
             - ANNUAL
-            - SINGLEPAYMENT
         startDate:
           type: string
           format: date
@@ -728,7 +705,9 @@ components:
           type: string
           format: date
         payee:
-          $ref: "#/components/schemas/Payee"
+          type: array
+          items:
+            $ref: "#/components/schemas/Payee"
         parties:
           type: array
           items:
@@ -829,6 +808,11 @@ components:
           type: string
           description: branch name
           maxLength: 100
+      required:
+        - nameOnAccount
+        - accountType
+        - accountNumber
+        - routingNumber
     
     TaxWithholdingInstruction:
       type: object
@@ -879,6 +863,19 @@ components:
         - taxWithholdingType
         - taxRateToUse
         - taxId
+      oneOf:
+        - description: Use a fixed dollar amount for withholding.
+          required: [dollar]
+        - description: Use a percentage for withholding.
+          required: [percentage]
+      allOf:
+        - if:
+            properties:
+              taxWithholdingType:
+                const: STATE
+          then:
+            required:
+              - taxJurisdiction
     
     SystematicParty:
         anyOf:
@@ -887,7 +884,7 @@ components:
         properties:
           paymentForm:
             type: string
-            enum: [DTCC, CREDITCARD, ACH, CHECK, WIRE, EXCHANGE]
+            enum: [DTCC, ACH, CHECK, WIRE, EXCHANGE]
           allocationPercentage:
             type: number
             description: At Policy Level for Each Applicable Fund
@@ -909,11 +906,7 @@ components:
           description: Address ID
         addressType:
           type: string
-          enum:
-            - RESIDENCE
-            - BUSINESS
-            - POBOXSEASONAL
-            - OTHER
+          enum: [RESIDENCE, BUSINESS, POBOXSEASONAL, APO, DPO, FPO]
         addressLine1:
           type: string
           maxLength: 100
@@ -921,6 +914,12 @@ components:
           type: string
           maxLength: 100
         addressLine3:
+          type: string
+          maxLength: 100
+        addressLine4:
+          type: string
+          maxLength: 100
+        addressLine5:
           type: string
           maxLength: 100
         city:
@@ -935,6 +934,12 @@ components:
         zipCodeExtension:
           type: string
           pattern: '^[0-9A-Za-z]{1,4}$'
+      required:
+        - addressType
+        - addressLine1
+        - city
+        - state
+        - zipCode
 
     SystematicProgramUpdateResponse:
       type: object
@@ -980,31 +985,6 @@ components:
           description: Requested percentage from the fund
           minimum: 0
           maximum: 100
-        fundDistributionSegment:
-          $ref: "#/components/schemas/FundDistributionSegment"
-    
-    FundDistributionSegment:
-      type: object
-      description: Fund distribution segmented details
-      properties:
-        segmentId:
-          type: string
-          maxLength: 100
-          description: Segment identifier
-        currentAmount:
-          type: 
-            - number
-            - "null"
-          description: Current amount in the segment[null allowed]
-          minimum: 0
-          maximum: 9999999999.99
-        requestedAmount:
-          type: 
-            - number
-            - "null"
-          description: Requested amount from the segment[null allowed]
-          minimum: 0
-          maximum: 9999999999.99
     
     rmdInfo:
       type: object
@@ -1042,15 +1022,59 @@ components:
     Error:
       type: object
       properties:
+        httpStatus:
+          type: integer
+          description: HTTP status code associated with this error
+          minimum: 400
+          maximum: 599
         code:
           type: string
+          description: |
+            A structured error code that uniquely identifies the type of error. This can follow a hierarchical format:
+            - `<domain>`: The logical domain (e.g., "gateway")
+            - `<category>`: The error category (e.g., "client" or "server")
+            - `<subcategory>`: A specific error identifier (e.g., "badrequest", "timeout")
+          pattern: "^[a-zA-Z]+\\.[a-zA-Z]+\\.[a-zA-Z]+$"
+        timestamp:
+          type: string
+          format: date-time
+          description: Time when the error occurred
         message:
           type: string
+          description: Technical message with specific error details for developers identify the type of error quickly.
+        userMessage:
+          type: string
+          description: End-user readable message to describe the error in simple terms.
         correlationId:
           type: string
+          description: Unique identifier to correlate the error to its corresponding request. This correlationId will be used for debugging and monitoring.
+          maxLength: 100
+        validationErrors:
+          type: array
+          items:
+            type: object
+            properties:
+              field:
+                type: string
+                description: Name of the field on which error has occurred
+              location:
+                type: string
+                description: The specific location where the error occured.
+              reason:
+                type: string
+                description: Details about why the error occurred
+        businessErrors:
+          type: array
+          description: Logical business rule violations or decision failures related to business logic or rules
+          items:
+            type: object
+            properties:
+              code:
+                type: string
+                description: Code to classify the business error & Identifies the type of business rule or decision failure.
+              message:
+                type: string
+                description: Why the business error occurred / Specific business rule violation
       required:
         - code
         - message
-
-security:
-  - oauth2: [withdrawal.write]
