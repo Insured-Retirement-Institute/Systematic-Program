@@ -1,0 +1,121 @@
+{
+    "method": "PUT",
+    "url": "https://api.your-company-domain.com/v1/policies/ABC12345/transactions/updatesystematicRMD",
+    "headers": {
+        "Content-Type": "application/json",
+        "Accept": "application/json",
+        "Authorization": "Bearer <token>",
+        "correlationId": "7b4e9c0a-1234-4567-89ab-001122334455"
+    },
+    "query": {
+        "cusip": "12345AB9"
+    },
+    "body": {
+        "effectiveDate": "2025-01-20",
+        "actionIndicator": "O",
+        "associatedFirmId": "FIRM123",
+        "nsccParticipantId": "NSCC001",
+        "cusip": "12345A",
+        "SystematicProgram": {
+            "paymentForm": "ACH",
+            "arrangementType": "REQUIREDMINIMUMDISTRIBUTION",
+            "amountType": "PERCENTAGE",
+            "netGrossIndicator": "G",
+            "requestedPercentage": 5,
+            "frequency": "QUARTERLY",
+            "startDate": "2025-02-01",
+            "endDate": "2025-12-31",
+            "previousTransactionDate": "2025-01-15",
+            "nextTransactionDate": "2025-02-01",
+            "payee": {
+                "partyId": "Party_PI_1",
+                "firstName": "Alex",
+                "middleName": "M",
+                "lastName": "Smith",
+                "organizationName": "OrgName",
+                "bank": {
+                    "bankId": "Bank_1",
+                    "nameOnAccount": "Alex Smith",
+                    "accountStatus": "ACTIVEBANKACCOUNT",
+                    "accountType": "CHECKING",
+                    "accountNumber": "12345678",
+                    "routingNumber": "123456789",
+                    "branchName": "Main Branch"
+                },
+                "taxWithholdingInstructions": [
+                    {
+                        "partyId": "Party_PI_1",
+                        "taxWithholdingType": "FEDERAL",
+                        "taxRateToUse": "USEVALUESENTERED",
+                        "filingStatus": "SINGLE",
+                        "dollar": 10,
+                        "percentage": 20,
+                        "exemptions": 0,
+                        "taxJurisdiction": "USA"
+                    }
+                ]
+            },
+            "parties": [
+                {
+                    "partyId": "Party_PI_1",
+                    "firstName": "Max",
+                    "middleName": "II",
+                    "lastName": "Payne",
+                    "partyRole": "OWNER",
+                    "paymentForm": "ACH",
+                    "allocationPercentage": 100,
+                    "bank": {
+                        "bankId": "Bank_1",
+                        "nameOnAccount": "Alex Smith",
+                        "accountStatus": "ACTIVEBANKACCOUNT",
+                        "accountType": "CHECKING",
+                        "accountNumber": "12345678",
+                        "routingNumber": "123456789",
+                        "branchName": "Main Branch"
+                    },
+                    "address": {
+                        "addressId": "1",
+                        "addressType": "RESIDENCE",
+                        "addressLine1": "100 Main St",
+                        "addressLine2": "Downtown",
+                        "addressLine3": "Suite 35",
+                        "city": "Boston",
+                        "state": "MA",
+                        "zipCode": "02110",
+                        "zipCodeExtension": "1234"
+                    },
+                    "forBenefitOfOrForFurtherCredit": "TBD"
+                }
+            ],
+            "producer": {
+                "producerNumber": "PROD001",
+                "npn": "1234567890",
+                "crdNumber": "9876543210"
+            },
+            "fundAllocation": {
+                "allocationOption": "PRORATA"
+            },
+            "fundDistributions": [
+                {
+                    "fundId": "FUND-ABC",
+                    "fundName": "Growth Fund",
+                    "totalFundValue": 12342342,
+                    "requestedAmount": 23542,
+                    "fundDistributionSegment": {
+                        "segmentId": "SEG-1",
+                        "currentAmount": null,
+                        "requestedAmount": null
+                    }
+                }
+            ]
+        },
+        "RMDInfo": {
+            "RMDTaxYear": 2025,
+            "RMDAgeAtDistribution": 73,
+            "RMDSpouseDoB": "1958-04-01",
+            "RMDRequestedAmount": 1200,
+            "RMDCalculationMethod": "UNIFORM_LIFETIME_TABLE",
+            "RMDPriorYearEndValue": 118560
+        }
+    }
+}

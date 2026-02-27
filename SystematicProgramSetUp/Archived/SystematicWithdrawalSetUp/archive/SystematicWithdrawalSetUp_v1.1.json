@@ -1,0 +1,114 @@
+{
+    "method": "POST",
+    "url": "https://api.your-company-domain.com/v1/policies/ABC12345/transactions/rmdProgram",
+    "headers": {
+        "Content-Type": "application/json",
+        "Accept": "application/json",
+        "Authorization": "Bearer <token>",
+        "CorrelationId": "7b4e9c0a-1234-4567-89ab-001122334455"
+    },
+    "query": {
+        "cusip": "12345AB9"
+    },
+    "body": {
+        "effectiveDate": "2025-01-15",
+        "actionIndicator": "N",
+        "associatedFirmId": "FIRM123",
+        "nsccParticipantId": "NSCC001",
+        "externalArrangementId": "EXT-ARR-7890",
+        "cusip": "12345A",
+        "submitRmdProgram": {
+            "paymentForm": "ACH",
+            "arrangementType": "REQUIREDMINIMUMDISTRIBUTION",
+            "amountType": "PERCENTAGE",
+            "netGrossIndicator": "G",
+            "requestedPercentage": 5,
+            "frequency": "QUARTERLY",
+            "startDate": "2025-02-01",
+            "endDate": "2025-12-31",
+            "previousProgramDate": "2025-01-15",
+            "nextProgramDate": "2025-04-01"
+        },
+        "fundAllocation": {
+            "allocationOption": "PRORATA",
+            "fundDistributions": [
+                {
+                    "fundId": "FUND-ABC",
+                    "fundName": "Growth Fund",
+                    "totalFundValue": 118560,
+                    "requestedAmount": 1200,
+                    "fundDistributionSegment": {
+                        "segmentId": "SEG-1",
+                        "currentAmount": 0,
+                        "requestedAmount": 0
+                    }
+                }
+            ]
+        },
+        "payee": {
+            "partyId": "Party_PI_1",
+            "firstName": "Alex",
+            "middleName": "M",
+            "lastName": "Smith",
+            "organizationName": "OrgName",
+            "bank": {
+                "bankId": "Bank_1",
+                "startDate": "2024-12-01",
+                "nameOnAccount": "Alex Smith",
+                "accountStatus": "ACTIVEBANKACCOUNT",
+                "accountType": "CHECKING",
+                "accountNumber": "12345678",
+                "routingNumber": "123456789",
+                "branchName": "Main Branch"
+            },
+            "taxWithholdingInstructions": {
+                "partyId": "Party_PI_1",
+                "taxWithholdingType": "FEDERAL",
+                "taxRateToUse": "USEVALUESENTERED",
+                "filingStatus": "SINGLE",
+                "dollar": 10,
+                "percentage": 20,
+                "exemptions": 0,
+                "taxJurisdiction": "USA"
+            }
+        },
+        "parties": [
+            {
+                "partyId": "Party_PI_1",
+                "firstName": "Max",
+                "middleName": "II",
+                "lastName": "Payne",
+                "partyRole": "OWNER",
+                "paymentForm": "ACH",
+                "allocationPercentage": 100,
+                "bank": {
+                    "bankId": "Bank_1",
+                    "startDate": "2024-12-01",
+                    "nameOnAccount": "Alex Smith",
+                    "accountStatus": "ACTIVEBANKACCOUNT",
+                    "accountType": "CHECKING",
+                    "accountNumber": "12345678",
+                    "routingNumber": "123456789",
+                    "branchName": "Main Branch"
+                },
+                "address": {
+                    "addressId": 1,
+                    "addressType": "RESIDENCE",
+                    "addressLine1": "100 Main St",
+                    "addressLine2": "Downtown",
+                    "addressLine3": "35",
+                    "city": "Boston",
+                    "state": "MA",
+                    "zipCode": "02110",
+                    "zipCodeExtension": "1234",
+                    "country": "US"
+                }
+            }
+        ],
+        "producer": {
+            "producerNumber": "PROD001",
+            "npn": "1234567890",
+            "crdNumber": "9876543210"
+        }
+    }
+}

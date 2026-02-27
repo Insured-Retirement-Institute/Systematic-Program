@@ -1,0 +1,851 @@
+openapi: 3.1.0
+info:
+  title: Policy Transactions API - SetUp Systematic Withdrawal & SetUp Systematic RMD
+  version: 1.1.0
+  description: |
+    Single-file API spec for submitting Systematic Withdrawal and Systematic RMD transactions.
+  license:
+    name: MIT
+    url: https://opensource.org/licenses/MIT
+servers:
+  - url: https://api.your-company-domain.com
+    description: Production
+  - url: https://sandbox.your-company-domain.com
+    description: Sandbox
+
+tags:
+  - name: Systematic Program Setup
+    description: Endpoints related to systematic withdrawal & RMD program setup submissions
+
+paths:
+  /v1/policies/{policyNumber}/transactions/{transactionType}:
+    post:
+      operationId: submitSystematicProgram
+      description: Submits a systematic withdrawal or RMD Program setup.
+      tags: [Systematic Program Setup]
+      parameters:
+        - $ref: '#/components/parameters/policyNumber'
+        - $ref: '#/components/parameters/transactionType'
+        - $ref: '#/components/parameters/correlationId'
+        - $ref: '#/components/parameters/cusipQuery'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+                oneOf:
+                  -  $ref: '#/components/schemas/SubmitSystematicWithdrawalRequest'
+                  -  $ref: '#/components/schemas/SubmitSystematicRMDRequest'
+            examples:
+              Submit_SystematicWithdrawal_Amount:
+                summary: Systematic Withdrawal with amountType as AMOUNT
+                value:
+                  effectiveDate: '2025-01-15'
+                  actionIndicator: 'N'
+                  associatedFirmId: 'FIRM123'
+                  nsccParticipantId: 'NSCC001'
+                  externalArrangementId: 'EXT-ARR-7890'
+                  cusip: '12345A'
+                  SystematicProgram:
+                    paymentForm: 'ACH'
+                    arrangementType: 'WITHDRAWAL'
+                    amountType: 'AMOUNT'
+                    netGrossIndicator: 'N'
+                    requestedAmount: 300.00
+                    frequency: 'MONTHLY'
+                    startDate: '2025-02-01'
+                    endDate: '2025-12-31'
+                    previousTransactionDate: '2025-01-15'
+                    nextTransactionDate: '2025-02-01'
+                    payee:
+                      partyId: 'Party_PI_1'
+                      firstName: 'Alex'
+                      middleName: 'M'
+                      lastName: 'Smith'
+                      organizationName: 'OrgName'
+                      bank:
+                        bankId: 'Bank_1'
+                        nameOnAccount: 'Alex Smith'
+                        accountStatus: 'ACTIVEBANKACCOUNT'
+                        accountType: 'CHECKING'
+                        accountNumber: '12345678'
+                        routingNumber: '123456789'
+                        branchName: 'Main Branch'
+                      taxWithholdingInstructions:
+                        - partyId: 'Party_PI_1'
+                          taxWithholdingType: 'FEDERAL'
+                          taxRateToUse: 'USEVALUESENTERED'
+                          filingStatus: 'SINGLE'
+                          dollar: 10
+                          percentage: 20
+                          exemptions: 0
+                          taxJurisdiction: 'USA'
+                        - partyId: 'Party_PI_1'
+                          taxWithholdingType: 'STATE'
+                          taxRateToUse: 'USEVALUESENTERED'
+                          filingStatus: 'DEFAULT'
+                          dollar: 0
+                          percentage: 5
+                          exemptions: 0
+                          taxJurisdiction: 'MA'
+                    parties:
+                      - partyId: 'Party_PI_1'
+                        firstName: 'Max'
+                        middleName: 'II'
+                        lastName: 'Payne'
+                        partyRole: 'OWNER'
+                        paymentForm: 'ACH'
+                        allocationPercentage: 100
+                        bank:
+                          bankId: 'Bank_1'
+                          nameOnAccount: 'Alex Smith'
+                          accountStatus: 'ACTIVEBANKACCOUNT'
+                          accountType: 'CHECKING'
+                          accountNumber: '12345678'
+                          routingNumber: '123456789'
+                          branchName: 'Main Branch'
+                        address:
+                          addressId: '1'
+                          addressType: 'RESIDENCE'
+                          addressLine1: '100 Main St'
+                          addressLine2: 'Downtown'
+                          addressLine3: '35'
+                          city: 'Boston'
+                          state: 'MA'
+                          zipCode: '02110'
+                          zipCodeExtension: '1234'
+                          country: 'US'
+                    producer:
+                      producerNumber: 'PROD001'
+                      npn: '1234567890'
+                      crdNumber: '9876543210'
+                    fundAllocation:
+                      allocationOption: 'PRORATA'
+                    fundDistributions:
+                      - fundId: 'FUND-ABC'
+                        fundName: 'Growth Fund'
+                        totalFundValue: 112321
+                        requestedAmount: 2345
+                        fundDistributionSegment:
+                          segmentId: 'SEG-1'
+                          currentAmount: null
+                          requestedAmount: null
+              Submit_RmdProgram_Percentage:
+                summary: RMD with amountType as PERCENTAGE
+                value:
+                  effectiveDate: '2025-01-15'
+                  actionIndicator: 'N'
+                  associatedFirmId: 'FIRM123'
+                  nsccParticipantId: 'NSCC001'
+                  externalArrangementId: 'EXT-ARR-7890'
+                  cusip: '12345A'
+                  SystematicProgram:
+                    paymentForm: 'ACH'
+                    arrangementType: 'REQUIREDMINIMUMDISTRIBUTION'
+                    amountType: 'PERCENTAGE'
+                    netGrossIndicator: 'G'
+                    requestedPercentage: 5.00
+                    frequency: 'QUARTERLY'
+                    startDate: '2025-02-01'
+                    endDate: '2025-12-31'
+                    previousTransactionDate: '2025-01-15'
+                    nextTransactionDate: '2025-02-01'
+                    payee:
+                      partyId: 'Party_PI_1'
+                      firstName: 'Alex'
+                      middleName: 'M'
+                      lastName: 'Smith'
+                      organizationName: 'OrgName'
+                      bank:
+                        bankId: 'Bank_1'
+                        nameOnAccount: 'Alex Smith'
+                        accountStatus: 'ACTIVEBANKACCOUNT'
+                        accountType: 'CHECKING'
+                        accountNumber: '12345678'
+                        routingNumber: '123456789'
+                        branchName: 'Main Branch'
+                      taxWithholdingInstructions:
+                        - partyId: 'Party_PI_1'
+                          taxWithholdingType: 'FEDERAL'
+                          taxRateToUse: 'USEVALUESENTERED'
+                          filingStatus: 'SINGLE'
+                          dollar: 10
+                          percentage: 20
+                          exemptions: 0
+                          taxJurisdiction: 'USA'
+                    parties:
+                      - partyId: 'Party_PI_1'
+                        firstName: 'Max'
+                        middleName: 'II'
+                        lastName: 'Payne'
+                        partyRole: 'OWNER'
+                        paymentForm: 'ACH'
+                        allocationPercentage: 100
+                        bank:
+                          bankId: 'Bank_1'
+                          nameOnAccount: 'Alex Smith'
+                          accountStatus: 'ACTIVEBANKACCOUNT'
+                          accountType: 'CHECKING'
+                          accountNumber: '12345678'
+                          routingNumber: '123456789'
+                          branchName: 'Main Branch'
+                        address:
+                          addressId: '1'
+                          addressType: 'RESIDENCE'
+                          addressLine1: '100 Main St'
+                          addressLine2: 'Downtown'
+                          addressLine3: '35'
+                          city: 'Boston'
+                          state: 'MA'
+                          zipCode: '02110'
+                          zipCodeExtension: '1234'
+                          country: 'US'
+                    producer:
+                      producerNumber: 'PROD001'
+                      npn: '1234567890'
+                      crdNumber: '9876543210'
+                    fundAllocation:
+                      allocationOption: 'PRORATA'
+                    fundDistributions:
+                      - fundId: 'FUND-ABC'
+                        fundName: 'Growth Fund'
+                        totalFundValue: 12312
+                        requestedAmount: 3512
+                        fundDistributionSegment:
+                          segmentId: 'SEG-1'
+                          currentAmount: null
+                          requestedAmount: null
+                    rmdInfo:
+                      rmdTaxYear: 2025
+                      rmdAgeAtDistribution: 73
+                      rmdSpouseDoB: '1958-04-01'
+                      rmdRequestedAmount: 1200.00
+                      rmdCalculationMethod: 'UNIFORM_LIFETIME_TABLE'
+                      rmdPriorYearEndValue: 118560.00
+      responses:
+        '200':
+          description: Transaction accepted
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TransactionAcceptedResponse'
+        '400':
+          description: Validation error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '404':
+          description: Not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '409':
+          description: Conflict
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '422':
+          description: Unprocessable Entity
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '429':
+          description: Too Many Requests
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '500':
+          description: Server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '502':
+          description: Bad Gateway
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '503':
+          description: Service Unavailable
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '504':
+          description: Gateway Timeout
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+      security:
+        - oauth2: [withdrawal.write]
+
+components:
+  securitySchemes:
+    oauth2:
+      type: oauth2
+      flows:
+        clientCredentials:
+          tokenUrl: https://auth.your-company-domain.com/oauth2/token
+          scopes:
+            withdrawal.write: Submit systematic programs
+            withdrawal.read: Read systematic programs
+
+  parameters:
+    policyNumber:
+      name: policyNumber
+      in: path
+      required: true
+      description: Unique policy number
+      schema:
+        type: string
+        pattern: '^[A-Za-z0-9]{6,20}$'
+    transactionType: 
+      name: transactionType
+      in: path
+      required: true
+      description: >-
+        Type of transaction being processed. Use 'submit-systematic-program' for standard Systematic Program setup, or 'submit-rmd-program' when submitting an RMD program setup (RMDInfo must be provided).
+      schema:
+        type: string
+        enum: [submitSystematicWithdrawal, submitSystematicRMD]
+    correlationId:
+      name: correlationId
+      in: header
+      required: true
+      description: Unique identifier to trace the request
+      schema:
+        type: string
+        maxLength: 100
+    cusipQuery:
+      name: cusip
+      in: query
+      required: false
+      description: Optional; REQUIRED only when policyNumber is not globally unique.
+      schema:
+        type: string
+        pattern: '^[A-Za-z0-9]{5,9}$'
+
+  schemas:
+    PartyIdentity:
+      type: object
+      description: Common party identity fields
+      properties:
+        partyId:
+          type: string
+          maxLength: 100
+        firstName:
+          type: string
+          maxLength: 100
+        middleName:
+          type: string
+          maxLength: 100
+        lastName:
+          type: string
+          maxLength: 100
+        organizationName:
+          type: string
+          maxLength: 100
+    Producer:
+      type: object
+      description: Information about the producer submitting the request
+      properties:
+        producerNumber:
+          type: string
+          maxLength: 100
+        npn:
+          type: string
+          pattern: '^\d{1,10}$'
+          maxLength: 100
+        crdNumber:
+          type: string
+          pattern: '^\d{1,10}$'
+          maxLength: 100
+
+    SubmitSystematicWithdrawalRequest:
+      type: object
+      description: Request - SubmitSystematicWithdrawalRequest
+      properties:
+        effectiveDate:
+          type: string
+          format: date
+        associatedFirmId:
+          type: string
+          maxLength: 100
+        nsccParticipantId:
+          type: string
+          maxLength: 100
+        externalArrangementId:
+          type: string
+          description: Arrangement ID from external system
+          maxLength: 100
+        actionIndicator:
+          type: string
+          enum: [N, O, C]
+        cusip:
+          type: string
+          description: Optional; REQUIRED only when policyNumber is not globally unique.
+          pattern: '^[A-Za-z0-9]{5,9}$'
+        SystematicProgram:
+          allOf:
+            - $ref: '#/components/schemas/SystematicProgram'
+            - type: object
+              properties:
+                arrangementType:
+                  type: string
+                  enum: [PAYMENT, WITHDRAWAL, LOANREPAYMENT, PAYOUT]
+      required:
+        - effectiveDate
+        - actionIndicator
+        - externalArrangementId
+
+    SubmitSystematicRMDRequest:
+      type: object
+      description: Request - SubmitSystematicRMDRequest
+      properties:
+        effectiveDate:
+          type: string
+          format: date
+        associatedFirmId:
+          type: string
+          maxLength: 100
+        nsccParticipantId:
+          type: string
+          maxLength: 100
+        externalArrangementId:
+          type: string
+        actionIndicator:
+          type: string
+          enum: [N, O, C]
+        cusip:
+          type: string
+          description: Optional; REQUIRED only when policyNumber is not globally unique.
+          pattern: '^[A-Za-z0-9]{5,9}$'
+        SystematicProgram:
+          allOf:
+            - $ref: '#/components/schemas/SystematicProgram'
+            - type: object
+              properties:
+                arrangementType:
+                  type: string
+                  enum: [REQUIREDMINIMUMDISTRIBUTION]
+                rmdInfo:
+                  $ref: '#/components/schemas/rmdInfo'
+      required:
+        - effectiveDate
+        - actionIndicator
+        - externalArrangementId
+    SystematicProgram:
+      type: object
+      properties:
+        paymentForm:
+          type: string
+          description: Mode of payment
+          enum: [DTCC, CREDITCARD, ACH, CHECK, WIRE, EXCHANGE]
+        arrangementType:
+          type: string
+          description: The type of payment such as fixed or flexible[ for RMD, it will always be REQUIREDMINIMUMDISTRIBUTION]
+          enum: [PAYMENT, WITHDRAWAL, LOANREPAYMENT, REQUIREDMINIMUMDISTRIBUTION, PAYOUT]
+        amountType:
+          type: string
+          description: |
+            Amount Type selected by user.
+            1. Amount – enter Transaction Amount
+            2. Percentage – enter Percentage for Transaction Amount
+            3. Max – auto-calculated using Maximum Withdrawal Amount
+            4. Free Withdrawal Amount – auto-calculated using Free Withdrawal Amount
+            5. Withdraw Until Basis – auto-calculated using Cost Basis.
+          enum: [AMOUNT, PERCENTAGE, MAX, FREEWITHDRAWALAMOUNT, WITHDRAWALUNTILBASIS, EARNINGSONLY, PRORATA]
+        netGrossIndicator:
+          type: string
+          description: To indicate if the transaction is N="Net" or G="Gross"
+          enum: [N, G]
+        requestedAmount:
+          type: number
+          format: double
+          description: Requested amount value
+          minimum: 0
+          maximum: 9999999999.99
+        requestedPercentage:
+          type: number
+          format: double
+          description: Requested Percentage value
+          minimum: 0
+          maximum: 100
+        frequency:
+          type: string
+          description: frequency
+          enum: [DAILY, EVERYTWOWEEKS, MONTHLY, SEMIANNUAL, QUARTERLY, ANNUAL, SINGLEPAYMENT]
+        startDate:
+          type: string
+          format: date
+          pattern: '^(\\d{4})-(\\d{2})-(\\d{2})$'
+        endDate:
+          type: string
+          format: date
+          pattern: '^(\\d{4})-(\\d{2})-(\\d{2})$'
+        previousTransactionDate:
+          type: string
+          format: date
+          pattern: '^(\\d{4})-(\\d{2})-(\\d{2})$'
+        nextTransactionDate:
+          type: string
+          format: date
+          pattern: '^(\\d{4})-(\\d{2})-(\\d{2})$'
+        payee:
+          $ref: '#/components/schemas/Payee'
+        parties:
+          type: array
+          items:
+            $ref: '#/components/schemas/SystematicParty'
+        producer:
+          $ref: '#/components/schemas/Producer'
+        fundAllocation:
+          $ref: '#/components/schemas/FundAllocation'
+        fundDistributions:
+          type: array
+          items:
+            $ref: '#/components/schemas/FundDistribution'
+      required:
+        - paymentForm
+        - arrangementType
+        - netGrossIndicator
+      allOf:
+        - oneOf:
+            - description: When amountType is AMOUNT, requestedAmount must be supplied.
+              properties:
+                amountType:
+                  const: AMOUNT
+                requestedAmount:
+                  type: number
+              required: [amountType, requestedAmount]
+            - description: When amountType is PERCENTAGE, requestedPercentage must be supplied.
+              properties:
+                amountType:
+                  const: PERCENTAGE
+                requestedPercentage:
+                  type: number
+              required: [amountType, requestedPercentage]
+            - description: For MAX, FREEWITHDRAWALAMOUNT, WITHDRAWALUNTILBASIS, EARNINGSONLY, or PRORATA, neither requestedAmount nor requestedPercentage is required.
+              properties:
+                amountType:
+                  enum: [MAX, FREEWITHDRAWALAMOUNT, WITHDRAWALUNTILBASIS, EARNINGSONLY, PRORATA]
+              required: [amountType]
+        - if:
+            properties:
+              amountType:
+                const: PERCENTAGE
+              fundAllocation:
+                properties:
+                  allocationOption:
+                    const: SPECIFIEDFUNDS
+            required: [amountType, fundAllocation]
+          then:
+            properties:
+              fundDistributions:
+                type: array
+                items:
+                  allOf:
+                    - $ref: "#/components/schemas/FundDistribution"
+                    - required: [requestedPercentage]
+                    - not:
+                        anyOf:
+                          - required: [requestedAmount]
+    Payee:
+      type: object
+      properties:
+        partyId:
+          type: string
+          description: Impacted Party in the event of financial transaction
+          maxLength: 100
+        firstName:
+          type: string
+        middleName:
+          type: string
+        lastName:
+          type: string
+        organizationName:
+          type: string
+        bank:
+          $ref: '#/components/schemas/Bank'
+        taxWithholdingInstructions:
+          type: array
+          items:
+            $ref: '#/components/schemas/TaxWithholdingInstruction'
+
+    Bank:
+      type: object
+      properties:
+        bankId:
+          type: string
+          description: Comes in Acord 103
+          maxLength: 100
+        nameOnAccount:
+          type: string
+          description: Name of the registered user
+          maxLength: 100
+        accountStatus:
+          type: string
+          enum: [ACTIVEBANKACCOUNT, TERMINATEDBANKACCOUNT]
+        accountType:
+          type: string
+          enum: [CHECKING, SAVINGS, CREDITCARDACCOUNT, DEBITCARDACCOUNT, BROKERAGEACCOUNT, CERTIFICATEOFDEPOSITACCOUNT]
+        accountNumber:
+          type: string
+          pattern: '^\d{4,17}$'
+          maxLength: 17
+        routingNumber:
+          type: string
+          pattern: '^\d{9}$'
+        branchName:
+          type: string
+          description: branch name
+          maxLength: 100
+
+    TaxWithholdingInstruction:
+      type: object
+      properties:
+        partyId:
+          type: string
+          description: Impacted Party in the event of financial transaction
+          maxLength: 100
+        taxWithholdingType:
+          type: string
+          enum: [FEDERAL, STATE, NRA, BACKUP]
+        taxRateToUse:
+          type: string
+          enum: [NOWITHHOLDINGELECTED, USEVALUESENTERED, NOWITHHOLDINGALLOWED, USEDEFAULTTABLE]
+        filingStatus:
+          type: string
+          enum: [SINGLE, DOMESTICPARTNERSHIP, DEFAULT, MARRIED, HEADOFHOUSEHOLD, WIDOWED, DIVORCED]
+        dollar:
+          type: number
+          format: double
+          minimum: 0
+          maximum: 9999999999.99
+        percentage:
+          type: number
+          format: double
+          minimum: 0
+          maximum: 100
+        exemptions:
+          type: integer
+          format: int32
+          minimum: 0
+          maximum: 99
+        taxJurisdiction:
+          type: string
+          enum: [FEDERAL, STATE, LOCAL, FOREIGN]
+      required:
+        - partyId
+        - taxWithholdingType
+        - taxRateToUse
+
+    SystematicParty:
+      allOf:
+        - $ref: '#/components/schemas/PartyIdentity'
+        - type: object
+          properties:
+            partyRole:
+              type: string
+              description: Party Role
+              enum: [OWNER, PRIMARYBENEFICIARY, CONTINGENTBENEFICIARY, INSURED, PAYOR, PAYEE, AGENT, THIRDPARTYDESIGNEE]
+            paymentForm:
+              type: string
+              enum: [DTCC, CREDITCARD, ACH, CHECK, WIRE, EXCHANGE]
+            allocationPercentage:
+              type: number
+              format: double
+              description: At Policy Level for Each Applicable Fund
+              minimum: 0
+              maximum: 100
+            bank:
+              $ref: '#/components/schemas/Bank'
+            address:
+              $ref: '#/components/schemas/Address'
+          required:
+            - partyId
+            - paymentForm
+            - allocationPercentage
+
+    Address:
+      type: object
+      properties:
+        addressId:
+          type: string
+          description: Address ID
+          maxLength: 100
+        addressType:
+          type: string
+          enum: [RESIDENCE, BUSINESS, POBOXSEASONAL, OTHER]
+        addressLine1:
+          type: string
+          maxLength: 100
+        addressLine2:
+          type: string
+          maxLength: 100
+        addressLine3:
+          type: string
+          maxLength: 100
+        city:
+          type: string
+          maxLength: 100
+        state:
+          type: string
+          pattern: '^[A-Z]{2}$'
+        zipCode:
+          type: string
+          pattern: '^[0-9A-Za-z -]{3,10}$'
+        zipCodeExtension:
+          type: string
+          pattern: '^[0-9A-Za-z]{1,4}$'
+        country:
+          type: string
+          pattern: '^[A-Z]{2}$'
+
+    FundAllocation:
+      type: object
+      description: Process of assigning available funds
+      properties:
+        allocationOption:
+          type: string
+          description: Defines the format of how the funds are removed
+          enum: [PRORATA, DOLLAR, SPECIFYPERCENTAGE, SPECIFIEDFUNDS, SPECIFIEDSEGMENTS, DEFAULT, PECKINGORDER, EARNINGSONLY]
+      required:
+        - allocationOption
+
+    FundDistribution:
+      type: object
+      description: Detailed allocation of funds
+      properties:
+        fundId:
+          type: string
+          maxLength: 100
+          description: Fund identifier
+        fundName:
+          type: string
+          maxLength: 100
+          description: Name of the fund
+        totalFundValue:
+          type: number
+          description: Total value of the fund
+          minimum: 0
+          maximum: 9999999999.99
+        requestedAmount:
+          type: number
+          description: Requested amount from the fund
+          minimum: 0
+          maximum: 9999999999.99
+        requestedPercentage:
+          type: number
+          format: double
+          description: Requested percentage from the fund
+          minimum: 0
+          maximum: 100
+        fundDistributionSegment:
+          $ref: '#/components/schemas/FundDistributionSegment'
+
+    FundDistributionSegment:
+      type: object
+      description: Fund distribution segmented details
+      properties:
+        segmentId:
+          type: string
+          maxLength: 100
+          description: Segment identifier
+        currentAmount:
+          type: 
+            - number
+            - "null"
+          description: Current amount in the segment[null allowed]
+          minimum: 0
+          maximum: 9999999999.99
+        requestedAmount:
+          type: 
+            - number
+            - "null"
+          description: Requested amount from the segment[null allowed]
+          minimum: 0
+          maximum: 9999999999.99
+
+    rmdInfo:
+      type: object
+      description: required minimum distribution (rmd) details for the systematic program
+      properties:
+        rmdTaxYear:
+          type: integer
+          description: The tax year this rmd withdrawal is for (e.g., 2025).
+          minimum: 1900
+          maximum: 2100
+        rmdAgeAtDistribution:
+          type: integer
+          description: The age of the rmd owner on the distribution date, in whole years.
+          minimum: 0
+          maximum: 150
+        rmdSpouseDoB:
+          type: string
+          format: date
+          pattern: '^(\\d{4})-(\\d{2})-(\\d{2})$'
+          description: Date of birth of the spouse used for rmd calculations, if applicable.
+        rmdRequestedAmount:
+          type: number
+          format: double
+          description: Portion of this withdrawal that should count toward rmd for rmdTaxYear.
+          minimum: 0
+          maximum: 9999999999.99
+        rmdCalculationMethod:
+          type: string
+          description: The method or IRS table used to calculate the rmd.
+          enum: [UNIFORM_LIFETIME_TABLE, JOINT_LIFE, SINGLE_LIFE]
+        rmdPriorYearEndValue:
+          type: number
+          format: double
+          description: Contract value as of 12/31 of the prior year used as the base for rmd calculation.
+          minimum: 0
+      required:
+        - rmdTaxYear
+        - rmdRequestedAmount
+        - rmdCalculationMethod
+        - rmdAgeAtDistribution 
+
+    TransactionAcceptedResponse:
+      type: object
+      properties:
+        message:
+          type: string
+        correlationId:
+          type: string
+      required:
+        - message
+        - correlationId
+      additionalProperties: false
+    Error:
+      type: object
+      properties:
+        code:
+          type: string
+        message:
+          type: string
+        correlationId:
+          type: string
+      required:
+        - code
+        - message
