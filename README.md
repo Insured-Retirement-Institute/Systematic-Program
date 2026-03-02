@@ -1,162 +1,181 @@
-# Systematic Program Update Attribute Specification
-This repository contains the schema definitions for Systematic Withdrawal Update and Systematic RMD (Required Minimum Distribution) Update transactions. These specifications support the modernization of In-Force Transactions (IFT) by transitioning from legacy XML/SOAP messaging to RESTful APIs. This aligns with the industry’s Digital First goals and prepares stakeholders for scalable, secure, and interoperable retirement policy management.
+# IRI Systematic Program API
+### Systematic Withdrawal & Systematic RMD — Setup and Update
 
-## Get started
-To begin using this specification:
+## Overview
 
-1. Clone the repository:
-- Shellgit clone https://github.com/Insured-Retirement-Institute/systematicprogramupdate.git
+The **IRI Systematic Program API** defines the standards for establishing and updating **Systematic Withdrawal** and **Systematic Required Minimum Distribution (RMD)** programs on in‑force annuity policies.  
+This API supports the industry’s shift from legacy XML/SOAP interfaces to modern RESTful APIs that leverage JSON payloads and OAuth‑based authentication under IRI’s Digital‑First Architecture (DFA) initiative.
 
-2. Navigate to the project directory:
-- Shellcd systematicprogramupdateShow more lines
+This repository provides a unified view of both **Setup** and **Update** workflows while maintaining consistency, interoperability, and seamless integration across carriers, distributors, and solution providers.
 
-3. Review the schema documentation:
-- Understand the structure and required fields for both Systematic Withdrawal Update and Systematic RMD Update.
-- Integrate the schema into your transaction processing systems.
-
-
-4. Validate your data:
-
-- Ensure all required fields are populated.
-- Follow the data types and length constraints.
+---
 
 ## Business Case
-The financial services industry is rapidly evolving toward seamless, real-time, and lightweight digital experiences. Legacy XML/SOAP technology is approaching end-of-life and lacks the scalability, flexibility, and security required by today’s digital ecosystems. RESTful APIs, using JSON payloads and OAuth 2.0 authentication, are now the de facto standard.
 
-### Problem Statement:
-- End-of-Life Technology: SOAP is no longer supported; REST/JSON is prioritized by vendors and cloud providers.
-- Security: Modern protocols (OAuth 2.0) are required.
-- Scalability & Flexibility: REST APIs are lightweight, easier to parse, and integrate with microservices.
-- Industry Alignment: Supports IRI Digital First goals for secure, interoperable technology.
+### Problem Statement
+- Legacy XML/SOAP systems are approaching end‑of‑life and lack required modern security features.  
+- Firms need real‑time, standards‑based digital servicing for establishing and modifying systematic programs.  
+- Manual updates and paper‑based processes increase operational risk, delays, and rework.
 
-### Objectives & Key Results:
-- Transition all IFT processing from XML to RESTful API architecture.
-- Reduce transaction payload size and processing time.
-- Improve integration velocity across firms and carriers.
-- Strengthen transaction security.
-- Ensure long-term vendor and community support.
+### Objectives
+- Modernize systematic withdrawal and RMD workflows using REST/JSON. 
+- Transition all systematic withdrawal and RMD **setup** and **update** processing to RESTful API architecture. 
+- Provide consistent structures for setup and update transactions across the industry.  
+- Reduce processing complexity and integration overhead between carriers and partners.  
+- Align with IRI Digital‑First goals for secure, scalable, interoperable data exchanges.
+- Reduce operational risk and rework when program parameters change (amount, frequency, payee, funds, etc.).
 
-## User Stories, personna
-- As a Policy Administrator, I want to validate all required fields before submitting an update so that I can avoid processing delays.
-- As a System Integrator, I want to map the update schema to our internal data model so that we can automate the transaction flow.
-- As a Financial Advisor, I want to confirm the payee’s bank and address details so that I can ensure accurate disbursement.
+### Key Features
+- Unified schema patterns for Setup and Update  
+- OpenAPI 3.1.x specifications with examples  
+- Standardized error handling  
+- Modular schema components  
+- Industry‑wide interoperability through consistent Data Dictionary alignment  
 
-### 1. Policy Administrator
-- Goals: Ensure accurate and timely processing of systematic withdrawal and RMD updates.
-- Needs: Clear schema definitions, validation rules, and integration guidance.
-- Pain Points: Manual data entry errors, inconsistent formats, lack of traceability.
+---
 
-### 2. System Integrator
-- Goals: Implement update schema into backend systems and APIs.
-- Needs: JSON schema formats, sample payloads, field-level documentation.
-- Pain Points: Ambiguous field definitions, missing required attributes.
+## Supported Transactions
 
-### 3. Financial Advisor
+The Systematic Program specification includes **four** transaction types:
 
-- Goals: Guide clients through systematic withdrawal and RMD update processes.
-- Needs: Clear understanding of payment forms, tax implications, and beneficiary details.
-- Pain Points: Confusing terminology, paper process.
+### 1. Systematic Withdrawal Program Setup
+Creates a new systematic withdrawal arrangement for an active policy.  
+**Typical scenarios:**  
+- Scheduled income withdrawals  
+- Periodic disbursements aligned with client needs  
+- Withdrawal allocation across multiple funds or segments
+- Coordinated disbursements across multiple funds and parties.  
 
+### 2. Systematic Withdrawal Program Update
+Modifies an existing systematic withdrawal arrangement identified by `arrangementId`.  
+**Typical changes:**  
+- Updating amount or percentage  
+- Changing frequency or start/end dates  
+- Adjusting payee, bank, or tax withholding instructions  
+- Modifying fund allocation details
+- Updating payee details, bank information, or tax withholding instructions.
+- Modifying fund- or segment-level distribution allocations.  
 
-## Schema Overview
-The schema for systematic program update transactions is defined in the data model and includes the following key components for both Systematic Withdrawal Update and Systematic RMD Update:
+---
 
-### Root Attributes
-- correlationId: Unique transaction ID (string, required)
-- policyNumber: Unique policy number (string, required)
-- arrangementId: Unique ID for the systematic program within the policy (string, required)
-- effectiveDate: Transaction date (string, required, format: yyyy-mm-dd)
-- actionIndicator: Transaction action (enum: N, O, C)
-- associatedFirmId: Firm identifier (string, required)
-- nsccParticipantId: NSCC participant identifier (string, required)
-- cusip: Security identifier (string, optional)
+### 3. Systematic RMD Program Setup
+Establishes recurring Systematic RMD instructions to help policyholders meet regulatory RMD obligations. 
+**Typical scenarios:**  
+- Automating annual RMD distributions  
+- Applying selected RMD calculation methods  
+- Routing distributions with integrated withholding rules  
 
-### Systematic Program
-- paymentForm: Type of payment (enum: DTCC, CREDITCARD, ACH, CHECK, WIRE, EXCHANGE)
-- arrangementType: WITHDRAWAL or REQUIREDMINIMUMDISTRIBUTION
-- amountType: AMOUNT, PERCENTAGE, MAX, FREEWITHDRAWALAMOUNT, WITHDRAWALUNTILBASIS, EARNINGSONLY, PRORATA
-- netGrossIndicator: Net or Gross (enum: N, G)
-- requestedAmount/requestedPercentage: Amount or percentage, as applicable
-- frequency: Transaction frequency (enum: DAILY, EVERYTWOWEEKS, MONTHLY, SEMIANNUAL, QUARTERLY, ANNUAL, SINGLEPAYMENT)
-- startDate, endDate, previousTransactionDate, nextTransactionDate: Date fields
+### 4. Systematic RMD Program Update
+Updates an existing systematic RMD program.  
+**Typical changes:**  
+- Adjusting amount or requested percentage  
+- Updating distribution scheduling  
+- Revising payee or withholding details  
+- Updating RMD‑specific fields (calculation method, prior year values)  
 
-### For Systematic RMD Update Only:
+---
 
-- rmdInfo: RMD-specific details (tax year, age at distribution, spouse DOB, requested amount, calculation method, prior year end value)
+## Personas and User Stories
 
-### Payee/Beneficiary Details
+### Policy Administrator
+- Ensures accurate setup and maintenance of systematic programs  
+- Requires clear rules for required fields, frequency, amounts, and payee information  
 
-- partyId, firstName, middleName, lastName, organizationName
-- bank: Bank details (account number, routing number, etc.)
-- taxWithholdingInstructions: Array of tax withholding instructions
+### System Integrator
+- Implements the unified setup/update API pattern across carriers  
+- Needs consistent JSON schemas and well‑documented attributes  
 
-### Parties
+### Financial Advisor
+- Helps clients design withdrawal strategies and maintain RMD compliance  
+- Needs confidence that carrier systems process transactions accurately and timely  
 
-- partyRole, partyId, firstName, middleName, lastName, organizationName
-- paymentForm, allocationPercentage
-- bank, address: Financial and contact details
+---
 
-### Producer
+## High‑Level Schema Concepts
 
-- producerNumber, npn, crdNumber
+Shared concepts across Setup and Update APIs:
 
-### Fund Allocation & Distributions
+- **Root Attributes**  
+  Effective date, firm identifiers, action indicator, CUSIP, allocation options  
 
-- allocationOption: PRORATA, DOLLAR, SPECIFYPERCENTAGE, SPECIFIEDFUNDS, etc.
-- fundDistributions: Array of fund distribution objects
+- **Systematic Program**  
+  - paymentForm (e.g., ACH, DTCC)  
+  - arrangementType (WITHDRAWAL or REQUIREDMINIMUMDISTRIBUTION)  
+  - amountType (AMOUNT, PERCENTAGE, MAX, etc.)  
+  - net/gross indicator  
+  - schedule: frequency, start/end dates, next transaction date  
 
+- **Payee / Beneficiary**  
+  Individual or entity identity, banking information, tax withholding instructions  
 
-# Error Schema Overview
+- **Parties**  
+  Policy parties and role types (owner, annuitant, beneficiary)  
 
-All API operations—across synchronous and asynchronous processing models—adhere to a unified **Error schema**. This ensures consistent error handling, predictable integration behavior, and standardized troubleshooting across all transaction types.
+- **Producer**  
+  Identifiers for writing or servicing producers  
 
-## Success Response Expectations
+- **Fund Distributions**  
+  Optional fund‑level or segment‑level allocation instructions  
 
-### Synchronous APIs
-- Return **HTTP 200** for successful, completed processing.
+- **RMD‑Specific Data**  
+  Tax year, RMD age, calculation method, spouse date of birth (optional), prior year‑end value  
 
-### Asynchronous APIs
-- Return **HTTP 202** to acknowledge the request has been accepted for processing but not yet completed.
+These concepts ensure a unified approach to defining **new arrangements** (Setup) and **changes to existing ones** (Update).
+
+---
+
+## Response Model Overview
+
+### Success Responses
+- **Setup:** Returns **HTTP 201 Created**  
+- **Update:** Returns **HTTP 202 Accepted**  
+- `Location` header points to the request resource:  
+/v1/policies/{policyNumber}/withdrawals/requests/{requestId}
+- Body includes a request status object (`requestId`, `status`, `effectiveDate`, etc.)
+
+### Request Status Retrieval
+A `GET` endpoint returns lifecycle status with **HTTP 200 Success**.
 
 ---
 
 ## Standard Error Schema
+
 Every error response—regardless of transaction type—includes:
-- An HTTP status code in the **400–599** range
-- A structured and validated **error code**
-- A **timestamp** of when the error was generated
-- A developer‑focused **technical message** (`message`)
-- A safe, user‑friendly **userMessage**
-- A **correlationId** for cross‑system tracing
-- Optional **field‑level** or **rule‑level** error collections
 
----
+- An HTTP status code in the **400–599** range.
+- A structured and validated **error code**.
+- A **timestamp** of when the error was generated.
+- A developer‑focused **technical message** (`message`).
+- A safe, user‑friendly **userMessage**.
+- A **correlationId** for cross‑system tracing.
+- Optional **field‑level** or **rule‑level** error collections.
 
-## Key Fields
+### Key Fields
 
-| Field | Description |
-|-------|-------------|
-| **httpStatus** | Numeric HTTP status code (400–599) representing the type and severity of the failure. |
-| **code** | Structured identifier in the enforced format: `domain.category.subcategory`. Enables machine‑readable error handling. |
-| **message** | Technical diagnostic detail for developers, logs, or support teams. |
-| **userMessage** | End‑user‑friendly explanation, safe to show in portals or consumer‑facing apps. |
-| **correlationId** | Carries forward the inbound request’s correlation ID header to enable end‑to‑end traceability. |
-| **validationErrors** (optional) | Array describing field‑level validation issues (e.g., missing required fields, incorrect formats). |
-| **businessErrors** (optional) | Array describing domain/business rule violations; each entry requires its own code and message. |
+| Field                  | Description                                                                                     |
+|------------------------|-------------------------------------------------------------------------------------------------|
+| **httpStatus**         | Numeric HTTP status code (400–599) representing the type and severity of the failure.          |
+| **code**               | Structured identifier in the enforced format: `domain.category.subcategory`.                    |
+| **message**            | Technical diagnostic detail for developers, logs, or support teams.                            |
+| **userMessage**        | End‑user‑friendly explanation, safe to show in portals or consumer‑facing applications.        |
+| **correlationId**      | Carries forward the inbound request’s correlation ID header to enable end‑to‑end traceability. |
+| **validationErrors**   | *(optional)* Array describing field‑level validation issues.                                    |
+| **businessErrors**     | *(optional)* Array describing domain/business rule violations; each entry has its own code and message. |
 
----
+### Purpose & Benefits
 
-## Purpose & Benefits
 This standardized error structure ensures:
-- A **predictable experience** across all APIs (synchronous + asynchronous)
-- Clear differentiation between **developer diagnostics** and **user‑safe messages**
-- Enhanced **traceability** for carriers, distributors, and integrators
-- Support for granular **validation feedback** and complex business rule logic
-- Easier **monitoring, logging, and cross‑system troubleshooting**
+
+- A **predictable experience** across all APIs (synchronous and asynchronous).
+- Clear differentiation between **developer diagnostics** and **user‑safe messages**.
+- Enhanced **traceability** for carriers, distributors, and integrators.
+- Support for granular **validation feedback** and complex business rule logic.
+- Easier **monitoring, logging, and cross‑system troubleshooting**.
 
 
 ## OpenAPI Specs
-Unified Swagger documentation for all endpoints is available in the `openapi-specs/` folder.
+
+Unified Swagger/OpenAPI documentation for all systematic program endpoints is available in the `openapi-specs/` folder.
 
 ---
 
@@ -165,6 +184,14 @@ Unified Swagger documentation for all endpoints is available in the `openapi-spe
 - Issues and bugs can be reported directly within the **Issues** tab of this repository.
 - **Security issues** should be reported directly to Katherine Dease at **kdease@irionline.org**.
 - Change requests should follow the **standards governance workflow** outlined on the main page.
+
+---
+
+## Versioning
+
+- Follow semantic versioning for specification updates.
+- Document changes in commit messages and changelogs to support integrator adoption.
+- Clearly label draft vs active versions in alignment with IRI DFA governance.
 
 ---
 
@@ -186,4 +213,4 @@ Please review and adhere to the **Code of Conduct** and **Style Guide** provided
 
 - **Carrier Business Owner:** digitalfirst@brighthousefinancial.com  
 - **Distributor Business Owner:** [contact]  
-- **Solution Provider Business Owner:** [contact]  
+- **Solution Provider Business Owner:** [contact]
