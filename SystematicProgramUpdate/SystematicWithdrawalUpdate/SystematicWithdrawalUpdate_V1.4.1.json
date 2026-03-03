@@ -1,0 +1,120 @@
+{
+    "method": "PUT",
+    "url": "https://api.your-company-domain.com/v1/policies/ABC12345/withdrawals/systematic-withdrawal/FSC41231",
+    "headers": {
+        "Content-Type": "application/json",
+        "Accept": "application/json",
+        "Authorization": "Bearer <token>",
+        "correlationId": "9f8e7d6c-1111-2222-3333-444455556666"
+    },
+    "query": {
+        "associatedFirmId": "DTCC"
+    },
+    "body": {
+        "effectiveDate": "2025-01-20",
+        "actionIndicator": "O",
+        "nsccParticipantId": "NSCC001",
+        "cusip": "0275IFOW4",
+		"allocationOption": "PRORATA",
+        "systematicProgram": {
+            "paymentForm": "ACH",
+            "arrangementType": "WITHDRAWAL",
+            "amountType": "AMOUNT",
+            "netGrossIndicator": "N",
+            "requestedAmount": 300,
+            "frequency": "MONTHLY",
+            "startDate": "2025-02-01",
+            "endDate": "2025-12-31",
+            "previousTransactionDate": "2025-01-15",
+            "nextTransactionDate": "2025-02-01",
+            "payee": [{
+                "taxId": "123456789",
+                "firstName": "Alex",
+                "middleName": "M",
+                "lastName": "Smith",
+                "type": "individual",
+                "bank": {
+                    "bankId": "Bank_1",
+                    "nameOnAccount": "Alex Smith",
+                    "accountStatus": "ACTIVEBANKACCOUNT",
+                    "accountType": "CHECKING",
+                    "accountNumber": "12345678",
+                    "routingNumber": "123456789",
+                    "branchName": "Main Branch"
+                },
+                "taxWithholdingInstructions": [
+                    {
+                        "taxId": "123456789",
+                        "taxWithholdingType": "FEDERAL",
+                        "taxRateToUse": "USEVALUESENTERED",
+                        "filingStatus": "SINGLE",
+                        "dollar": 10,
+                        "exemptions": 0
+                    },
+                    {
+                        "taxId": "123456789",
+                        "taxWithholdingType": "STATE",
+                        "taxRateToUse": "USEVALUESENTERED",
+                        "filingStatus": "DEFAULT",
+                        "dollar": 5,
+                        "exemptions": 0,
+                        "taxJurisdiction": "MA"
+                    }
+                ]
+            }],
+            "parties": [
+                {
+                    "taxId": "123456789",
+					"firstName": "Alex",
+					"middleName": "M",
+					"lastName": "Smith",
+					"type": "individual",
+					"relationships": [
+						"owner"
+					  ],
+					"paymentForm": "ACH",
+					"allocationPercentage": 100,
+                    "bank": {
+                        "bankId": "Bank_1",
+                        "nameOnAccount": "Alex Smith",
+                        "accountStatus": "ACTIVEBANKACCOUNT",
+                        "accountType": "CHECKING",
+                        "accountNumber": "12345678",
+                        "routingNumber": "123456789",
+                        "branchName": "Main Branch"
+                    },
+                    "address": {
+                        "addressId": "1",
+                        "addressType": "RESIDENCE",
+                        "addressLine1": "100 Main St",
+                        "addressLine2": "Downtown",
+                        "addressLine3": "Suite 35",
+                        "city": "Boston",
+                        "state": "MA",
+                        "zipCode": "02110",
+                        "zipCodeExtension": "1234"
+                    }
+                }
+            ],
+            "producer": {
+                "producerNumber": "PROD001",
+                "npn": "1234567890",
+                "crdNumber": "9876543210"
+            },
+            "fundDistributions": [
+                {
+                    "fundId": "FUND-ABC",
+                    "fundName": "Growth Fund",
+                    "totalFundValue": null,
+                    "requestedAmount": null
+                },
+                {
+                    "fundId": "FUND-XYZ",
+                    "fundName": "Income Fund",
+                    "totalFundValue": null,
+                    "requestedAmount": null
+                }
+            ]
+        }
+    }
+}
