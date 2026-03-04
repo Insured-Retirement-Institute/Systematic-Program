@@ -1,11 +1,12 @@
 {
     "method": "PUT",
-    "url": "https://api.your-company-domain.com/v1/policies/ABC12345/withdrawals/systematic-withdrawal/FSC41231",
-    "headers": {
+    "url": "https://api.your-company-domain.com/v1/policies/ABC12345/withdrawals/systematic-rmd/FSC41231",
+        "headers": 
+        {
         "Content-Type": "application/json",
         "Accept": "application/json",
         "Authorization": "Bearer <token>",
-        "correlationId": "9f8e7d6c-1111-2222-3333-444455556666"
+        "correlationId": "7b4e9c0a-1234-4567-89ab-001122334455"
     },
     "query": {
         "associatedFirmId": "DTCC"
@@ -16,13 +17,13 @@
         "nsccParticipantId": "NSCC001",
         "cusip": "0275IFOW4",
 		"allocationOption": "PRORATA",
-        "SystematicProgram": {
+        "systematicProgram": {
             "paymentForm": "ACH",
-            "arrangementType": "WITHDRAWAL",
-            "amountType": "AMOUNT",
-            "netGrossIndicator": "N",
-            "requestedAmount": 300,
-            "frequency": "MONTHLY",
+            "arrangementType": "REQUIREDMINIMUMDISTRIBUTION",
+            "amountType": "PERCENTAGE",
+            "netGrossIndicator": "G",
+            "requestedPercentage": 5,
+            "frequency": "QUARTERLY",
             "startDate": "2025-02-01",
             "endDate": "2025-12-31",
             "previousTransactionDate": "2025-01-15",
@@ -50,15 +51,6 @@
                         "filingStatus": "SINGLE",
                         "dollar": 10,
                         "exemptions": 0
-                    },
-                    {
-                        "taxId": "123456789",
-                        "taxWithholdingType": "STATE",
-                        "taxRateToUse": "USEVALUESENTERED",
-                        "filingStatus": "DEFAULT",
-                        "dollar": 5,
-                        "exemptions": 0,
-                        "taxJurisdiction": "MA"
                     }
                 ]
             }],
@@ -107,14 +99,16 @@
                     "fundName": "Growth Fund",
                     "totalFundValue": null,
                     "requestedAmount": null
-                },
-                {
-                    "fundId": "FUND-XYZ",
-                    "fundName": "Income Fund",
-                    "totalFundValue": null,
-                    "requestedAmount": null
                 }
-            ]
-        }
+            ],
+        "RMDInfo": {
+            "RMDTaxYear": 2025,
+            "RMDAgeAtDistribution": 73,
+            "RMDSpouseDoB": "1958-04-01",
+            "RMDRequestedAmount": 1200,
+            "RMDCalculationMethod": "UNIFORM_LIFETIME_TABLE",
+            "RMDPriorYearEndValue": 118560
+			}
+		}
     }
 }

@@ -17,7 +17,7 @@
         "externalArrangementId": "EXT-ARR-7890",
         "cusip": "0275IFOW4",
 		"allocationOption": "PRORATA",
-        "SystematicProgram": {
+        "systematicProgram": {
             "paymentForm": "ACH",
             "arrangementType": "WITHDRAWAL",
             "amountType": "PERCENTAGE",

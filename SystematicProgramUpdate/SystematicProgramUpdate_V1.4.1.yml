@@ -1,7 +1,7 @@
 openapi: 3.1.0
 info:
   title: Policy Transactions API - Update Systematic Withdrawal & Update Systematic RMD
-  version: 1.4.0
+  version: 1.4.1
   description: |
     API to update a systematic withdrawal and Systematic RMD on a policy.
   license:
@@ -35,7 +35,7 @@ paths:
                   nsccParticipantId: 'NSCC001'
                   cusip: '027IFOWW4'
                   allocationOption: 'PRORATA'
-                  SystematicProgram:
+                  systematicProgram:
                     paymentForm: 'ACH'
                     arrangementType: 'WITHDRAWAL'
                     amountType: 'AMOUNT'
@@ -174,7 +174,7 @@ paths:
                   nsccParticipantId: 'NSCC001'
                   cusip: '027IFOWW4'
                   allocationOption: 'PRORATA'
-                  SystematicProgram:
+                  systematicProgram:
                     paymentForm: 'ACH'
                     arrangementType: 'REQUIREDMINIMUMDISTRIBUTION'
                     amountType: 'PERCENTAGE'
@@ -308,7 +308,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/WithdrawalRequestStatus'
+                $ref: '#/components/schemas/GetWithdrawalRequestStatus'
         '400': { $ref: '#/components/responses/BadRequestError' }
         '401': { $ref: '#/components/responses/UnauthorizedError' }
         '403': { $ref: '#/components/responses/ForbiddenError' }
@@ -623,7 +623,7 @@ components:
         actionIndicator:
           type: string
           enum: [N, O, C]
-        SystematicProgram:
+        systematicProgram:
           allOf:
             - $ref: '#/components/schemas/SystematicProgram'
             - type: object
@@ -636,46 +636,66 @@ components:
         - actionIndicator
         - allocationOption
       allOf:
-          - if:
+        - if:
+            properties:
+              allocationOption:
+                    const: SPECIFIEDFUNDS
+              systematicProgram:
+                type: object
+                properties:
+                  amountType:
+                    const: AMOUNT
+            required:
+              - systematicProgram
+              - allocationOption
+          then:
+            properties:
+              systematicProgram:
+                type: object
+                properties:
+                  fundDistributions:
+                    type: array
+                    items:
+                      allOf:
+                        - $ref: '#/components/schemas/FundDistribution'
+                        - required: [requestedAmount]
+            not:
               properties:
-                allocationOption: { const: SPECIFIEDFUNDS }
-                SystematicProgram:
-                  type: object
-                  properties:
-                    amountType: { const: PERCENTAGE }
-            then:
-              properties:
-                SystematicProgram:
-                  type: object
-                  properties:
-                    fundDistributions:
-                      type: array
-                      items:
-                        allOf:
-                          - $ref: '#/components/schemas/FundDistribution'
-                          - properties:
-                              requestedPercentage: { type: number }
-                            required: [requestedPercentage]
-          - if:
-              properties:
-                allocationOption: { const: SPECIFIEDFUNDS }
-                SystematicProgram:
-                  type: object
-                  properties:
-                    amountType: { const: AMOUNT }
-            then:
-              properties:
-                SystematicProgram:
-                  type: object
+                systematicProgram:
                   properties:
                     fundDistributions:
-                      type: array
                       items:
-                        allOf:
-                          - $ref: '#/components/schemas/FundDistribution'
-                          - properties:
-                              requestedAmount: { type: number }
-                            required: [requestedAmount]
+                        required: [requestedPercentage]
+        - if:
+            properties:
+              allocationOption:
+                    const: SPECIFIEDFUNDS
+              systematicProgram:
+                type: object
+                properties:
+                  amountType:
+                    const: PERCENTAGE
+            required:
+              - systematicProgram
+              - allocationOption
+          then:
+            properties:
+              systematicProgram:
+                type: object
+                properties:
+                  fundDistributions:
+                    type: array
+                    items:
+                      allOf:
+                        - $ref: '#/components/schemas/FundDistribution'
+                        - required: [requestedPercentage]
+            not:
+              properties:
+                systematicProgram:
+                  properties:
+                    fundDistributions:
+                      items:
+                        required: [requestedAmount]
 
     UpdateSystematicRMDRequest:
       type: object
@@ -699,7 +719,7 @@ components:
         actionIndicator:
           type: string
           enum: [N, O, C]
-        SystematicProgram:
+        systematicProgram:
           allOf:
             - $ref: '#/components/schemas/SystematicProgram'
             - type: object
@@ -714,46 +734,66 @@ components:
         - actionIndicator
         - allocationOption
       allOf:
-          - if:
+        - if:
+            properties:
+              allocationOption:
+                    const: SPECIFIEDFUNDS
+              systematicProgram:
+                type: object
+                properties:
+                  amountType:
+                    const: AMOUNT
+            required:
+              - systematicProgram
+              - allocationOption
+          then:
+            properties:
+              systematicProgram:
+                type: object
+                properties:
+                  fundDistributions:
+                    type: array
+                    items:
+                      allOf:
+                        - $ref: '#/components/schemas/FundDistribution'
+                        - required: [requestedAmount]
+            not:
               properties:
-                allocationOption: { const: SPECIFIEDFUNDS }
-                SystematicProgram:
-                  type: object
-                  properties:
-                    amountType: { const: PERCENTAGE }
-            then:
-              properties:
-                SystematicProgram:
-                  type: object
-                  properties:
-                    fundDistributions:
-                      type: array
-                      items:
-                        allOf:
-                          - $ref: '#/components/schemas/FundDistribution'
-                          - properties:
-                              requestedPercentage: { type: number }
-                            required: [requestedPercentage]
-          - if:
-              properties:
-                allocationOption: { const: SPECIFIEDFUNDS }
-                SystematicProgram:
-                  type: object
-                  properties:
-                    amountType: { const: AMOUNT }
-            then:
-              properties:
-                SystematicProgram:
-                  type: object
+                systematicProgram:
                   properties:
                     fundDistributions:
-                      type: array
                       items:
-                        allOf:
-                          - $ref: '#/components/schemas/FundDistribution'
-                          - properties:
-                              requestedAmount: { type: number }
-                            required: [requestedAmount]
+                        required: [requestedPercentage]
+        - if:
+            properties:
+              allocationOption:
+                    const: SPECIFIEDFUNDS
+              systematicProgram:
+                type: object
+                properties:
+                  amountType:
+                    const: PERCENTAGE
+            required:
+              - systematicProgram
+              - allocationOption
+          then:
+            properties:
+              systematicProgram:
+                type: object
+                properties:
+                  fundDistributions:
+                    type: array
+                    items:
+                      allOf:
+                        - $ref: '#/components/schemas/FundDistribution'
+                        - required: [requestedPercentage]
+            not:
+              properties:
+                systematicProgram:
+                  properties:
+                    fundDistributions:
+                      items:
+                        required: [requestedAmount]
 
     SystematicProgram:
       type: object
@@ -1159,10 +1199,29 @@ components:
         status:
           type: string
           description: Current status of the withdrawal request.
-          enum: [ACCEPTED, SUCCESS]
+          enum: [ACCEPTED, REJECTED]
         effectiveDate:
           type: string
           format: date
+      required: [requestId, status]
+
+    GetWithdrawalRequestStatus:
+      type: object
+      description: Withdrawal request status resource created by the GET.
+      properties:
+        requestId:
+          type: string
+          description: Server-assigned identifier for the withdrawal request.
+        status:
+          type: string
+          description: Current status of the withdrawal request.
+          enum: [IN_PROGRESS, SUCCESS, REJECTED]
+        effectiveDate:
+          type: string
+          format: date
+        message:
+          type: string
+          description: Technical message with specific error details for developers identify the type of error quickly.
       required: [requestId, status]
 
     Error:

@@ -35,7 +35,7 @@ paths:
                   externalArrangementId: 'EXT-ARR-7890'
                   cusip: '027ABCD12'
                   allocationOption: 'PRORATA'
-                  SystematicProgram:
+                  systematicProgram:
                     paymentForm: 'ACH'
                     arrangementType: 'WITHDRAWAL'
                     amountType: 'AMOUNT'
@@ -173,7 +173,7 @@ paths:
                   externalArrangementId: 'EXT-ARR-7890'
                   cusip: '027ABCD12'
                   allocationOption: 'PRORATA'
-                  SystematicProgram:
+                  systematicProgram:
                     paymentForm: 'ACH'
                     arrangementType: 'REQUIREDMINIMUMDISTRIBUTION'
                     amountType: 'PERCENTAGE'
@@ -308,7 +308,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/WithdrawalRequestStatus'
+                $ref: '#/components/schemas/GetWithdrawalRequestStatus'
         '400': { $ref: '#/components/responses/BadRequestError' }
         '401': { $ref: '#/components/responses/UnauthorizedError' }
         '403': { $ref: '#/components/responses/ForbiddenError' }
@@ -614,7 +614,7 @@ components:
           type: string
           enum: [PRORATA, DOLLAR, SPECIFYPERCENTAGE, SPECIFIEDFUNDS, SPECIFIEDSEGMENTS, DEFAULT, PECKINGORDER, EARNINGSONLY]
           description: Defines the format of how the funds are removed
-        SystematicProgram:
+        systematicProgram:
           allOf:
             - $ref: '#/components/schemas/SystematicProgram'
             - type: object
@@ -632,17 +632,17 @@ components:
             properties:
               allocationOption:
                     const: SPECIFIEDFUNDS
-              SystematicProgram:
+              systematicProgram:
                 type: object
                 properties:
                   amountType:
                     const: AMOUNT
             required:
-              - SystematicProgram
+              - systematicProgram
               - allocationOption
           then:
             properties:
-              SystematicProgram:
+              systematicProgram:
                 type: object
                 properties:
                   fundDistributions:
@@ -651,8 +651,43 @@ components:
                       allOf:
                         - $ref: '#/components/schemas/FundDistribution'
                         - required: [requestedAmount]
-                        - not:
-                            required: [requestedPercentage]
+            not:
+              properties:
+                systematicProgram:
+                  properties:
+                    fundDistributions:
+                      items:
+                        required: [requestedPercentage]
+        - if:
+            properties:
+              allocationOption:
+                    const: SPECIFIEDFUNDS
+              systematicProgram:
+                type: object
+                properties:
+                  amountType:
+                    const: PERCENTAGE
+            required:
+              - systematicProgram
+              - allocationOption
+          then:
+            properties:
+              systematicProgram:
+                type: object
+                properties:
+                  fundDistributions:
+                    type: array
+                    items:
+                      allOf:
+                        - $ref: '#/components/schemas/FundDistribution'
+                        - required: [requestedPercentage]
+            not:
+              properties:
+                systematicProgram:
+                  properties:
+                    fundDistributions:
+                      items:
+                        required: [requestedAmount]
 
     SubmitSystematicRMDRequest:
       type: object
@@ -679,7 +714,7 @@ components:
           type: string
           enum: [PRORATA, DOLLAR, SPECIFYPERCENTAGE, SPECIFIEDFUNDS, SPECIFIEDSEGMENTS, DEFAULT, PECKINGORDER, EARNINGSONLY]
           description: Defines the format of how the funds are removed
-        SystematicProgram:
+        systematicProgram:
           allOf:
             - $ref: '#/components/schemas/SystematicProgram'
             - type: object
@@ -697,14 +732,19 @@ components:
       allOf:
         - if:
             properties:
-              allocationOption: { const: SPECIFIEDFUNDS }
-              SystematicProgram:
+              allocationOption:
+                    const: SPECIFIEDFUNDS
+              systematicProgram:
                 type: object
                 properties:
-                  amountType: { const: PERCENTAGE }
+                  amountType:
+                    const: AMOUNT
+            required:
+              - systematicProgram
+              - allocationOption
           then:
             properties:
-              SystematicProgram:
+              systematicProgram:
                 type: object
                 properties:
                   fundDistributions:
@@ -712,19 +752,29 @@ components:
                     items:
                       allOf:
                         - $ref: '#/components/schemas/FundDistribution'
-                        - properties:
-                            requestedPercentage: { type: number }
-                          required: [requestedPercentage]
+                        - required: [requestedAmount]
+            not:
+              properties:
+                systematicProgram:
+                  properties:
+                    fundDistributions:
+                      items:
+                        required: [requestedPercentage]
         - if:
             properties:
-              allocationOption: { const: SPECIFIEDFUNDS }
-              SystematicProgram:
+              allocationOption:
+                    const: SPECIFIEDFUNDS
+              systematicProgram:
                 type: object
                 properties:
-                  amountType: { const: AMOUNT }
+                  amountType:
+                    const: PERCENTAGE
+            required:
+              - systematicProgram
+              - allocationOption
           then:
             properties:
-              SystematicProgram:
+              systematicProgram:
                 type: object
                 properties:
                   fundDistributions:
@@ -732,9 +782,14 @@ components:
                     items:
                       allOf:
                         - $ref: '#/components/schemas/FundDistribution'
-                        - properties:
-                            requestedAmount: { type: number }
-                          required: [requestedAmount]
+                        - required: [requestedPercentage]
+            not:
+              properties:
+                systematicProgram:
+                  properties:
+                    fundDistributions:
+                      items:
+                        required: [requestedAmount]
 
     SystematicProgram:
       type: object
@@ -1095,10 +1150,29 @@ components:
         status:
           type: string
           description: Current status of the withdrawal request.
-          enum: [CREATED, SUCCESS]
+          enum: [CREATED, REJECTED]
         effectiveDate:
           type: string
           format: date
+      required: [requestId, status]
+
+    GetWithdrawalRequestStatus:
+      type: object
+      description: Withdrawal request status resource created by the GET request.
+      properties:
+        requestId:
+          type: string
+          description: Server-assigned identifier for the withdrawal request.
+        status:
+          type: string
+          description: Current status of the withdrawal request.
+          enum: [IN_PROGRESS, SUCCESS, REJECTED]
+        effectiveDate:
+          type: string
+          format: date
+        message:
+          type: string
+          description: Technical message with specific error details for developers identify the type of error quickly.
       required: [requestId, status]
 
     Error:
