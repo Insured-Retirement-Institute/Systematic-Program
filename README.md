@@ -100,7 +100,7 @@ Shared concepts across Setup and Update APIs:
 
 - **Systematic Program**  
   - paymentForm (e.g., ACH, DTCC)  
-  - arrangementType (WITHDRAWAL or REQUIREDMINIMUMDISTRIBUTION)  
+  - arrangementType (WITHDRAWAL or REQUIRED_MINIMUM_DISTRIBUTION)  
   - amountType (AMOUNT, PERCENTAGE, MAX, etc.)  
   - net/gross indicator  
   - schedule: frequency, start/end dates, next transaction date  
@@ -146,7 +146,6 @@ Every error response—regardless of transaction type—includes:
 - A structured and validated **error code**.
 - A **timestamp** of when the error was generated.
 - A developer‑focused **technical message** (`message`).
-- A safe, user‑friendly **userMessage**.
 - A **correlationId** for cross‑system tracing.
 - A **field‑level** or **rule‑level** error collections.
 
@@ -157,9 +156,94 @@ Every error response—regardless of transaction type—includes:
 | **httpStatus**         | Numeric HTTP status code (400–599) representing the type and severity of the failure.           |
 | **code**               | Structured identifier in the enforced format: `domain.category.subcategory`.                    |
 | **correlationId**      | Carries forward the inbound request’s correlation ID header to enable end‑to‑end traceability.  |
-| **message**            | End‑user‑friendly explanation, safe to show in portals or consumer‑facing apps.                 |
+| **message**            | Message with specific error details, safe to show in portals or consumer‑facing apps.                 |
 | **validationErrors**   | Array describing domain/business rule violations; each entry requires its own code and message. |
 
+
+# Day‑2 Asynchronous Processing
+Systematic Program transactions use an asynchronous processing model.
+
+Upon successful validation, the API returns a request identifier and the request continues processing asynchronously in downstream systems.
+
+## Delivery Model
+Day‑2 confirmation events are published through:
+
+- SAP Advanced Event Mesh
+- Solace Event Broker
+
+Consumers receive notifications through topic-based subscriptions.
+
+---
+
+## Day‑2 Confirmation Event
+Processing outcomes are communicated through the **Day2SystematicProgramConfirmationEvent**.
+
+Supported outcomes include:
+- SUCCESS
+- SUCCESS_WITH_INFO
+- FAILURE
+
+Each event includes:
+- requestId
+- correlationId
+- associatedFirmId
+- policyNumber
+- externalArrangementId
+- arrangementType
+- transactionType
+- eventId
+- eventType
+- eventTimestamp
+- status
+- transExeDate
+- transExeTime
+
+to support end-to-end traceability.
+
+## Event Schema
+
+### Event Metadata
+- eventType
+- eventId
+- eventTimestamp
+
+### Transaction Information
+- requestId
+- policyNumber
+- externalArrangementId
+- arrangementType
+- transactionType
+
+### Processing Outcome
+- status
+- message
+- effectiveDate
+
+### Producer and Participant Information
+- npn
+- nsccParticipantId
+
+### Execution Details
+- transExeDate
+- transExeTime
+
+Supported transactionType values:
+- SUBMIT_SYSTEMATIC_PROGRAM
+- UPDATE_SYSTEMATIC_PROGRAM
+- CANCEL_SYSTEMATIC_PROGRAM
+
+Supported eventType value:
+- DAY2_CONFIRM
+
+## Status Visibility
+
+The lifecycle endpoint:
+GET /v1/policies/{policyNumber}/withdrawals/requests/{requestId}
+provides operational visibility into transaction progress.
+
+The lifecycle endpoint does not replace Day‑2 event delivery as the authoritative source for final transaction outcomes.
+
+---
 ### Purpose & Benefits
 
 This standardized error structure ensures:
@@ -185,14 +269,6 @@ Unified Swagger/OpenAPI documentation for all systematic program endpoints is av
 
 ---
 
-## Versioning
-
-- Follow semantic versioning for specification updates.
-- Document changes in commit messages and changelogs to support integrator adoption.
-- Clearly label draft vs active versions in alignment with IRI DFA governance.
-
----
-
 ## Code of Conduct
 
 Please review and adhere to the **Code of Conduct** and **Style Guide** provided in the repository to ensure consistency and professionalism.
@@ -212,3 +288,20 @@ Please review and adhere to the **Code of Conduct** and **Style Guide** provided
 - **Carrier Business Owner:** digitalfirst@brighthousefinancial.com  
 - **Distributor Business Owner:** [contact]  
 - **Solution Provider Business Owner:** [contact]
+
+---
+
+## Versioning
+
+### v1.5.0 Highlights
+
+- **Day‑2 Processing:** Added `Day2SystematicProgramConfirmationEvent` support for event-driven confirmation of Setup and Update transactions.
+- **Enhanced Validation:** Added conditional validation for tax withholding rules.
+- **Amount Type Expansion:** Added support for `PENALTY_FREE` and `RIDER_FREE` amount types and standardized amount type naming conventions.
+- **Parties & Payees Model Standardization:** Standardized `IndividualIdentity.type`, `EntityIdentity.type`, and `PartyRelationship.relationships[]` enum values to Screaming Snake case, naming conventions.
+**Required Field Changes:** Added mandatory fields `nsccParticipantId`, `producer`, `allocationOption`, `Producer.npn`, `correlationId` and `associatedFirmId`.
+- **Enum Standardization:** Standardized enum naming conventions across arrangement types, relationship types, payment options, withholding values, and account types.
+- **Documentation Improvements:** Expanded schema descriptions, examples, business rules, and Data Dictionary alignment.
+
+---
+
