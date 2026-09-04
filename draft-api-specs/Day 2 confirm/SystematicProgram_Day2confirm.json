@@ -1,0 +1,19 @@
+{
+  "eventType": "DAY2_CONFIRM",
+  "eventId": "550e8400-e29b-41d4-a716-446655440001",
+  "eventTimestamp": "2026-03-15T14:30:45Z",
+  "associatedFirmId": "FIRM12345",
+  "requestId": "FT-REQ-10000001",
+  "correlationId": "CORR-20260315-000001",
+  "policyNumber": "POL123456789",
+  "transactionType": "SUBMIT_SYSTEMATIC_PROGRAM",
+  "externalArrangementId" : "EXT-ARR-7890",
+  "arrangementType" : "WITHDRAWAL",
+  "status": "SUCCESS",
+  "message": "Systematic Withdrawal arrangement successfully established.",
+  "effectiveDate": "2026-03-15",
+  "nsccParticipantId": "12345",
+  "npn": "99887766",
+  "transExeDate": "2026-03-15",
+  "transExeTime": "14:29:52"
+}
